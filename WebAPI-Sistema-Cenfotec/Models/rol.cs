@@ -16,15 +16,15 @@ namespace WebAPI_Sistema_Cenfotec.Models
     {
         public rol()
         {
-            this.usuarios = new HashSet<usuario>();
             this.permisos = new HashSet<permiso>();
+            this.usuarios = new HashSet<usuario>();
         }
     
         public int id_rol { get; set; }
         public string nombre { get; set; }
         public bool activo { get; set; }
     
-        public virtual ICollection<usuario> usuarios { get; set; }
         public virtual ICollection<permiso> permisos { get; set; }
+        public virtual ICollection<usuario> usuarios { get; set; }
     }
 }

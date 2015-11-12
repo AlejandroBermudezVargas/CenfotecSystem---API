@@ -175,6 +175,9 @@
     <Compile Include="Models\evento.cs">
       <DependentUpon>DatabaseModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\historial_contrasennas.cs">
+      <DependentUpon>DatabaseModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\kpi.cs">
       <DependentUpon>DatabaseModel.tt</DependentUpon>
     </Compile>
