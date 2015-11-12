@@ -16,9 +16,9 @@ namespace WebAPI_Sistema_Cenfotec.Models
     {
         public prospecto()
         {
-            this.bitacoras = new HashSet<bitacora>();
             this.eventos = new HashSet<evento>();
             this.tipo_producto = new HashSet<tipo_producto>();
+            this.bitacoras = new HashSet<bitacora>();
         }
     
         public int id_prospecto { get; set; }
@@ -33,8 +33,8 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public bool interesado { get; set; }
         public bool cliente { get; set; }
     
-        public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual ICollection<evento> eventos { get; set; }
         public virtual ICollection<tipo_producto> tipo_producto { get; set; }
+        public virtual ICollection<bitacora> bitacoras { get; set; }
     }
 }

@@ -28,16 +28,18 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public Nullable<int> id_sesion { get; set; }
         public Nullable<int> id_tipo_producto { get; set; }
         public Nullable<int> id_venta { get; set; }
+        public Nullable<int> id_usuario_afectado { get; set; }
     
         public virtual evento evento { get; set; }
         public virtual permiso permiso { get; set; }
+        public virtual producto producto { get; set; }
+        public virtual prospecto prospecto { get; set; }
         public virtual reporte reporte { get; set; }
         public virtual seguimiento seguimiento { get; set; }
         public virtual sesion sesion { get; set; }
-        public virtual usuario usuario { get; set; }
-        public virtual venta venta { get; set; }
-        public virtual prospecto prospecto { get; set; }
-        public virtual producto producto { get; set; }
         public virtual tipo_producto tipo_producto { get; set; }
+        public virtual usuario usuario { get; set; }
+        public virtual usuario usuario1 { get; set; }
+        public virtual venta venta { get; set; }
     }
 }
