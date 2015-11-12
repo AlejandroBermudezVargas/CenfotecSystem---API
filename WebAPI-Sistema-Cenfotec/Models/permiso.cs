@@ -16,15 +16,15 @@ namespace WebAPI_Sistema_Cenfotec.Models
     {
         public permiso()
         {
-            this.bitacoras = new HashSet<bitacora>();
             this.rols = new HashSet<rol>();
+            this.bitacoras = new HashSet<bitacora>();
         }
     
         public int id_permiso { get; set; }
         public string nombre { get; set; }
         public string descripcion { get; set; }
     
-        public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual ICollection<rol> rols { get; set; }
+        public virtual ICollection<bitacora> bitacoras { get; set; }
     }
 }

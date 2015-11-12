@@ -23,6 +23,7 @@
           <Property Name="id_sesion" Type="int" />
           <Property Name="id_tipo_producto" Type="int" />
           <Property Name="id_venta" Type="int" />
+          <Property Name="id_usuario_afectado" Type="int" />
         </EntityType>
         <EntityType Name="evento_prospectos">
           <Key>
@@ -307,6 +308,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_bitacoras_usuarios2">
+          <End Role="usuarios" Type="Self.usuarios" Multiplicity="0..1" />
+          <End Role="bitacoras" Type="Self.bitacoras" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuarios">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="bitacoras">
+              <PropertyRef Name="id_usuario_afectado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_bitacoras_ventas">
           <End Role="ventas" Type="Self.ventas" Multiplicity="0..1" />
           <End Role="bitacoras" Type="Self.bitacoras" Multiplicity="*" />
@@ -587,6 +600,10 @@
             <End Role="usuarios" EntitySet="usuarios" />
             <End Role="bitacoras" EntitySet="bitacoras" />
           </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_usuarios2" Association="Self.FK_bitacoras_usuarios2">
+            <End Role="usuarios" EntitySet="usuarios" />
+            <End Role="bitacoras" EntitySet="bitacoras" />
+          </AssociationSet>
           <AssociationSet Name="FK_bitacoras_ventas" Association="Self.FK_bitacoras_ventas">
             <End Role="ventas" EntitySet="ventas" />
             <End Role="bitacoras" EntitySet="bitacoras" />
@@ -656,35 +673,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="bitacora">
-          <Key>
-            <PropertyRef Name="id_bitacora" />
-          </Key>
-          <Property Name="id_bitacora" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="accion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="id_usuario" Type="Int32" />
-          <Property Name="id_prosprecto" Type="Int32" />
-          <Property Name="id_reporte" Type="Int32" />
-          <Property Name="id_evento" Type="Int32" />
-          <Property Name="id_permiso" Type="Int32" />
-          <Property Name="id_producto" Type="Int32" />
-          <Property Name="id_rol" Type="Int32" />
-          <Property Name="id_seguimiento" Type="Int32" />
-          <Property Name="id_sesion" Type="Int32" />
-          <Property Name="id_tipo_producto" Type="Int32" />
-          <Property Name="id_venta" Type="Int32" />
-          <NavigationProperty Name="evento" Relationship="Self.FK_bitacoras_eventos" FromRole="bitacoras" ToRole="eventos" />
-          <NavigationProperty Name="permiso" Relationship="Self.FK_bitacoras_permisos" FromRole="bitacoras" ToRole="permisos" />
-          <NavigationProperty Name="reporte" Relationship="Self.FK_bitacoras_reportes" FromRole="bitacoras" ToRole="reportes" />
-          <NavigationProperty Name="seguimiento" Relationship="Self.FK_bitacoras_seguimientos" FromRole="bitacoras" ToRole="seguimientos" />
-          <NavigationProperty Name="sesion" Relationship="Self.FK_bitacoras_sesion" FromRole="bitacoras" ToRole="sesion" />
-          <NavigationProperty Name="usuario" Relationship="Self.FK_bitacoras_usuarios" FromRole="bitacoras" ToRole="usuarios" />
-          <NavigationProperty Name="venta" Relationship="Self.FK_bitacoras_ventas" FromRole="bitacoras" ToRole="ventas" />
-          <NavigationProperty Name="prospecto" Relationship="DatabaseModel.FK_bitacoras_prospectos" FromRole="bitacora" ToRole="prospecto" />
-          <NavigationProperty Name="producto" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="bitacora" ToRole="producto" />
-          <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.FK_bitacoras_tipo_producto" FromRole="bitacora" ToRole="tipo_producto" />
-        </EntityType>
         <EntityType Name="evento">
           <Key>
             <PropertyRef Name="id_evento" />
@@ -693,8 +681,8 @@
           <Property Name="lugar" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="fecha_inicio" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="fecha_fin" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="bitacoras" Relationship="Self.FK_bitacoras_eventos" FromRole="eventos" ToRole="bitacoras" />
           <NavigationProperty Name="prospectos" Relationship="DatabaseModel.evento_prospectos" FromRole="evento" ToRole="prospecto" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_eventos" FromRole="evento" ToRole="bitacora" />
         </EntityType>
         <EntityType Name="permiso">
           <Key>
@@ -703,8 +691,8 @@
           <Property Name="id_permiso" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="bitacoras" Relationship="Self.FK_bitacoras_permisos" FromRole="permisos" ToRole="bitacoras" />
           <NavigationProperty Name="rols" Relationship="DatabaseModel.rol_permiso" FromRole="permiso" ToRole="rol" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_permisos" FromRole="permiso" ToRole="bitacora" />
         </EntityType>
         <EntityType Name="reporte">
           <Key>
@@ -713,7 +701,7 @@
           <Property Name="id_reporte" Type="Int32" Nullable="false" />
           <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="bitacoras" Relationship="Self.FK_bitacoras_reportes" FromRole="reportes" ToRole="bitacoras" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_reportes" FromRole="reporte" ToRole="bitacora" />
         </EntityType>
         <EntityType Name="seguimiento">
           <Key>
@@ -723,7 +711,7 @@
           <Property Name="id_prospecto" Type="Int32" Nullable="false" />
           <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="comentario" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="bitacoras" Relationship="Self.FK_bitacoras_seguimientos" FromRole="seguimientos" ToRole="bitacoras" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_seguimientos" FromRole="seguimiento" ToRole="bitacora" />
         </EntityType>
         <EntityType Name="sesion">
           <Key>
@@ -732,8 +720,8 @@
           <Property Name="id_sesion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="id_usuario" Type="Int32" Nullable="false" />
           <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="bitacoras" Relationship="Self.FK_bitacoras_sesion" FromRole="sesion" ToRole="bitacoras" />
           <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_sesion_usuarios" FromRole="sesion" ToRole="usuario" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_sesion" FromRole="sesion" ToRole="bitacora" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -757,13 +745,14 @@
           <Property Name="telefono" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="id_rol" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="bitacoras" Relationship="Self.FK_bitacoras_usuarios" FromRole="usuarios" ToRole="bitacoras" />
           <NavigationProperty Name="ventas" Relationship="Self.FK_ventas_usuarios" FromRole="usuarios" ToRole="ventas" />
           <Property Name="activo" Type="Boolean" Nullable="false" />
           <Property Name="fecha_nacimiento" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="sesions" Relationship="DatabaseModel.FK_sesion_usuarios" FromRole="usuario" ToRole="sesion" />
           <NavigationProperty Name="productos" Relationship="DatabaseModel.usuario_producto" FromRole="usuario" ToRole="producto" />
           <NavigationProperty Name="rol" Relationship="DatabaseModel.FK_usuarios_rols" FromRole="usuario" ToRole="rol" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_usuarios" FromRole="usuario" ToRole="bitacora" />
+          <NavigationProperty Name="bitacoras1" Relationship="DatabaseModel.FK_bitacoras_usuarios2" FromRole="usuario" ToRole="bitacora" />
         </EntityType>
         <EntityType Name="venta">
           <Key>
@@ -774,94 +763,10 @@
           <Property Name="monto" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="fecha" Type="DateTime" Precision="0" />
           <Property Name="tipo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="bitacoras" Relationship="Self.FK_bitacoras_ventas" FromRole="ventas" ToRole="bitacoras" />
           <NavigationProperty Name="usuario" Relationship="Self.FK_ventas_usuarios" FromRole="ventas" ToRole="usuarios" />
           <NavigationProperty Name="productos" Relationship="DatabaseModel.ventas_producto" FromRole="venta" ToRole="producto" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_ventas" FromRole="venta" ToRole="bitacora" />
         </EntityType>
-        <Association Name="FK_bitacoras_eventos">
-          <End Role="eventos" Type="Self.evento" Multiplicity="0..1" />
-          <End Role="bitacoras" Type="Self.bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="eventos">
-              <PropertyRef Name="id_evento" />
-            </Principal>
-            <Dependent Role="bitacoras">
-              <PropertyRef Name="id_evento" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_permisos">
-          <End Role="permisos" Type="Self.permiso" Multiplicity="0..1" />
-          <End Role="bitacoras" Type="Self.bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="permisos">
-              <PropertyRef Name="id_permiso" />
-            </Principal>
-            <Dependent Role="bitacoras">
-              <PropertyRef Name="id_permiso" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_reportes">
-          <End Role="reportes" Type="Self.reporte" Multiplicity="0..1" />
-          <End Role="bitacoras" Type="Self.bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="reportes">
-              <PropertyRef Name="id_reporte" />
-            </Principal>
-            <Dependent Role="bitacoras">
-              <PropertyRef Name="id_reporte" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_seguimientos">
-          <End Role="seguimientos" Type="Self.seguimiento" Multiplicity="0..1" />
-          <End Role="bitacoras" Type="Self.bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="seguimientos">
-              <PropertyRef Name="id_seguimiento" />
-            </Principal>
-            <Dependent Role="bitacoras">
-              <PropertyRef Name="id_seguimiento" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_sesion">
-          <End Role="sesion" Type="Self.sesion" Multiplicity="0..1" />
-          <End Role="bitacoras" Type="Self.bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="sesion">
-              <PropertyRef Name="id_sesion" />
-            </Principal>
-            <Dependent Role="bitacoras">
-              <PropertyRef Name="id_sesion" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_usuarios">
-          <End Role="usuarios" Type="Self.usuario" Multiplicity="0..1" />
-          <End Role="bitacoras" Type="Self.bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="usuarios">
-              <PropertyRef Name="id_usuario" />
-            </Principal>
-            <Dependent Role="bitacoras">
-              <PropertyRef Name="id_usuario" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_ventas">
-          <End Role="ventas" Type="Self.venta" Multiplicity="0..1" />
-          <End Role="bitacoras" Type="Self.bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ventas">
-              <PropertyRef Name="id_venta" />
-            </Principal>
-            <Dependent Role="bitacoras">
-              <PropertyRef Name="id_venta" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ventas_usuarios">
           <End Role="usuarios" Type="Self.usuario" Multiplicity="1" />
           <End Role="ventas" Type="Self.venta" Multiplicity="*" />
@@ -875,7 +780,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DBContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="bitacoras" EntityType="Self.bitacora" />
           <EntitySet Name="eventos" EntityType="Self.evento" />
           <EntitySet Name="permisos" EntityType="Self.permiso" />
           <EntitySet Name="reportes" EntityType="Self.reporte" />
@@ -884,34 +788,6 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="usuarios" EntityType="Self.usuario" />
           <EntitySet Name="ventas" EntityType="Self.venta" />
-          <AssociationSet Name="FK_bitacoras_eventos" Association="Self.FK_bitacoras_eventos">
-            <End Role="eventos" EntitySet="eventos" />
-            <End Role="bitacoras" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_permisos" Association="Self.FK_bitacoras_permisos">
-            <End Role="permisos" EntitySet="permisos" />
-            <End Role="bitacoras" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_reportes" Association="Self.FK_bitacoras_reportes">
-            <End Role="reportes" EntitySet="reportes" />
-            <End Role="bitacoras" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_seguimientos" Association="Self.FK_bitacoras_seguimientos">
-            <End Role="seguimientos" EntitySet="seguimientos" />
-            <End Role="bitacoras" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_sesion" Association="Self.FK_bitacoras_sesion">
-            <End Role="sesion" EntitySet="sesions" />
-            <End Role="bitacoras" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_usuarios" Association="Self.FK_bitacoras_usuarios">
-            <End Role="usuarios" EntitySet="usuarios" />
-            <End Role="bitacoras" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_ventas" Association="Self.FK_bitacoras_ventas">
-            <End Role="ventas" EntitySet="ventas" />
-            <End Role="bitacoras" EntitySet="bitacoras" />
-          </AssociationSet>
           <AssociationSet Name="FK_ventas_usuarios" Association="Self.FK_ventas_usuarios">
             <End Role="usuarios" EntitySet="usuarios" />
             <End Role="ventas" EntitySet="ventas" />
@@ -947,10 +823,6 @@
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
           <EntitySet Name="prospectos" EntityType="DatabaseModel.prospecto" />
-          <AssociationSet Name="FK_bitacoras_prospectos" Association="DatabaseModel.FK_bitacoras_prospectos">
-            <End Role="prospecto" EntitySet="prospectos" />
-            <End Role="bitacora" EntitySet="bitacoras" />
-          </AssociationSet>
           <AssociationSet Name="evento_prospectos" Association="DatabaseModel.evento_prospectos">
             <End Role="evento" EntitySet="eventos" />
             <End Role="prospecto" EntitySet="prospectos" />
@@ -961,14 +833,6 @@
           </AssociationSet>
           <EntitySet Name="productos" EntityType="DatabaseModel.producto" />
           <EntitySet Name="tipo_producto" EntityType="DatabaseModel.tipo_producto" />
-          <AssociationSet Name="FK_bitacoras_productos" Association="DatabaseModel.FK_bitacoras_productos">
-            <End Role="producto" EntitySet="productos" />
-            <End Role="bitacora" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_tipo_producto" Association="DatabaseModel.FK_bitacoras_tipo_producto">
-            <End Role="tipo_producto" EntitySet="tipo_producto" />
-            <End Role="bitacora" EntitySet="bitacoras" />
-          </AssociationSet>
           <AssociationSet Name="FK_productos_tipo_producto" Association="DatabaseModel.FK_productos_tipo_producto">
             <End Role="tipo_producto" EntitySet="tipo_producto" />
             <End Role="producto" EntitySet="productos" />
@@ -1000,6 +864,51 @@
             <End Role="permiso" EntitySet="permisos" />
             <End Role="rol" EntitySet="rols" />
           </AssociationSet>
+          <EntitySet Name="bitacoras" EntityType="DatabaseModel.bitacora" />
+          <AssociationSet Name="FK_bitacoras_eventos" Association="DatabaseModel.FK_bitacoras_eventos">
+            <End Role="evento" EntitySet="eventos" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_permisos" Association="DatabaseModel.FK_bitacoras_permisos">
+            <End Role="permiso" EntitySet="permisos" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_productos" Association="DatabaseModel.FK_bitacoras_productos">
+            <End Role="producto" EntitySet="productos" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_prospectos" Association="DatabaseModel.FK_bitacoras_prospectos">
+            <End Role="prospecto" EntitySet="prospectos" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_reportes" Association="DatabaseModel.FK_bitacoras_reportes">
+            <End Role="reporte" EntitySet="reportes" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_seguimientos" Association="DatabaseModel.FK_bitacoras_seguimientos">
+            <End Role="seguimiento" EntitySet="seguimientos" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_sesion" Association="DatabaseModel.FK_bitacoras_sesion">
+            <End Role="sesion" EntitySet="sesions" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_tipo_producto" Association="DatabaseModel.FK_bitacoras_tipo_producto">
+            <End Role="tipo_producto" EntitySet="tipo_producto" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_usuarios" Association="DatabaseModel.FK_bitacoras_usuarios">
+            <End Role="usuario" EntitySet="usuarios" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_usuarios2" Association="DatabaseModel.FK_bitacoras_usuarios2">
+            <End Role="usuario" EntitySet="usuarios" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_ventas" Association="DatabaseModel.FK_bitacoras_ventas">
+            <End Role="venta" EntitySet="ventas" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1027,22 +936,10 @@
           <Property Name="direccion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="interesado" Type="Boolean" Nullable="false" />
           <Property Name="cliente" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_prospectos" FromRole="prospecto" ToRole="bitacora" />
           <NavigationProperty Name="eventos" Relationship="DatabaseModel.evento_prospectos" FromRole="prospecto" ToRole="evento" />
           <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.prospecto_interes" FromRole="prospecto" ToRole="tipo_producto" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_prospectos" FromRole="prospecto" ToRole="bitacora" />
         </EntityType>
-        <Association Name="FK_bitacoras_prospectos">
-          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="0..1" />
-          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="prospecto">
-              <PropertyRef Name="id_prospecto" />
-            </Principal>
-            <Dependent Role="bitacora">
-              <PropertyRef Name="id_prosprecto" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="evento_prospectos">
           <End Type="DatabaseModel.evento" Role="evento" Multiplicity="*" />
           <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="*" />
@@ -1069,10 +966,10 @@
           <Property Name="costo" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="horario" Type="String" Nullable="false" MaxLength="254" FixedLength="false" Unicode="false" />
           <Property Name="id_tipo_product" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="producto" ToRole="bitacora" />
           <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.FK_productos_tipo_producto" FromRole="producto" ToRole="tipo_producto" />
           <NavigationProperty Name="usuarios" Relationship="DatabaseModel.usuario_producto" FromRole="producto" ToRole="usuario" />
           <NavigationProperty Name="ventas" Relationship="DatabaseModel.ventas_producto" FromRole="producto" ToRole="venta" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="producto" ToRole="bitacora" />
         </EntityType>
         <EntityType Name="tipo_producto">
           <Key>
@@ -1081,34 +978,10 @@
           <Property Name="id_tipo_producto" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_tipo_producto" FromRole="tipo_producto" ToRole="bitacora" />
           <NavigationProperty Name="productos" Relationship="DatabaseModel.FK_productos_tipo_producto" FromRole="tipo_producto" ToRole="producto" />
           <NavigationProperty Name="prospectos" Relationship="DatabaseModel.prospecto_interes" FromRole="tipo_producto" ToRole="prospecto" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_tipo_producto" FromRole="tipo_producto" ToRole="bitacora" />
         </EntityType>
-        <Association Name="FK_bitacoras_productos">
-          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="0..1" />
-          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="producto">
-              <PropertyRef Name="id_producto" />
-            </Principal>
-            <Dependent Role="bitacora">
-              <PropertyRef Name="id_producto" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_tipo_producto">
-          <End Type="DatabaseModel.tipo_producto" Role="tipo_producto" Multiplicity="0..1" />
-          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tipo_producto">
-              <PropertyRef Name="id_tipo_producto" />
-            </Principal>
-            <Dependent Role="bitacora">
-              <PropertyRef Name="id_tipo_producto" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_productos_tipo_producto">
           <End Type="DatabaseModel.tipo_producto" Role="tipo_producto" Multiplicity="1" />
           <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
@@ -1188,32 +1061,175 @@
           <End Type="DatabaseModel.permiso" Role="permiso" Multiplicity="*" />
           <End Type="DatabaseModel.rol" Role="rol" Multiplicity="*" />
         </Association>
+        <EntityType Name="bitacora">
+          <Key>
+            <PropertyRef Name="id_bitacora" />
+          </Key>
+          <Property Name="id_bitacora" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="accion" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="id_usuario" Type="Int32" />
+          <Property Name="id_prosprecto" Type="Int32" />
+          <Property Name="id_reporte" Type="Int32" />
+          <Property Name="id_evento" Type="Int32" />
+          <Property Name="id_permiso" Type="Int32" />
+          <Property Name="id_producto" Type="Int32" />
+          <Property Name="id_rol" Type="Int32" />
+          <Property Name="id_seguimiento" Type="Int32" />
+          <Property Name="id_sesion" Type="Int32" />
+          <Property Name="id_tipo_producto" Type="Int32" />
+          <Property Name="id_venta" Type="Int32" />
+          <Property Name="id_usuario_afectado" Type="Int32" />
+          <NavigationProperty Name="evento" Relationship="DatabaseModel.FK_bitacoras_eventos" FromRole="bitacora" ToRole="evento" />
+          <NavigationProperty Name="permiso" Relationship="DatabaseModel.FK_bitacoras_permisos" FromRole="bitacora" ToRole="permiso" />
+          <NavigationProperty Name="producto" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="bitacora" ToRole="producto" />
+          <NavigationProperty Name="prospecto" Relationship="DatabaseModel.FK_bitacoras_prospectos" FromRole="bitacora" ToRole="prospecto" />
+          <NavigationProperty Name="reporte" Relationship="DatabaseModel.FK_bitacoras_reportes" FromRole="bitacora" ToRole="reporte" />
+          <NavigationProperty Name="seguimiento" Relationship="DatabaseModel.FK_bitacoras_seguimientos" FromRole="bitacora" ToRole="seguimiento" />
+          <NavigationProperty Name="sesion" Relationship="DatabaseModel.FK_bitacoras_sesion" FromRole="bitacora" ToRole="sesion" />
+          <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.FK_bitacoras_tipo_producto" FromRole="bitacora" ToRole="tipo_producto" />
+          <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_bitacoras_usuarios" FromRole="bitacora" ToRole="usuario" />
+          <NavigationProperty Name="usuario1" Relationship="DatabaseModel.FK_bitacoras_usuarios2" FromRole="bitacora" ToRole="usuario" />
+          <NavigationProperty Name="venta" Relationship="DatabaseModel.FK_bitacoras_ventas" FromRole="bitacora" ToRole="venta" />
+        </EntityType>
+        <Association Name="FK_bitacoras_eventos">
+          <End Type="DatabaseModel.evento" Role="evento" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="evento">
+              <PropertyRef Name="id_evento" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_evento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_permisos">
+          <End Type="DatabaseModel.permiso" Role="permiso" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="permiso">
+              <PropertyRef Name="id_permiso" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_permiso" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_productos">
+          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="producto">
+              <PropertyRef Name="id_producto" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_prospectos">
+          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="prospecto">
+              <PropertyRef Name="id_prospecto" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_prosprecto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_reportes">
+          <End Type="DatabaseModel.reporte" Role="reporte" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="reporte">
+              <PropertyRef Name="id_reporte" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_reporte" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_seguimientos">
+          <End Type="DatabaseModel.seguimiento" Role="seguimiento" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="seguimiento">
+              <PropertyRef Name="id_seguimiento" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_seguimiento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_sesion">
+          <End Type="DatabaseModel.sesion" Role="sesion" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sesion">
+              <PropertyRef Name="id_sesion" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_sesion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_tipo_producto">
+          <End Type="DatabaseModel.tipo_producto" Role="tipo_producto" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_producto">
+              <PropertyRef Name="id_tipo_producto" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_tipo_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_usuarios">
+          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuario">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_usuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_usuarios2">
+          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuario">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_usuario_afectado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_ventas">
+          <End Type="DatabaseModel.venta" Role="venta" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="venta">
+              <PropertyRef Name="id_venta" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_venta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DatabaseModelStoreContainer" CdmEntityContainer="DBContext">
-          <EntitySetMapping Name="bitacoras">
-            <EntityTypeMapping TypeName="DatabaseModel.bitacora">
-              <MappingFragment StoreEntitySet="bitacoras">
-                <ScalarProperty Name="id_bitacora" ColumnName="id_bitacora" />
-                <ScalarProperty Name="fecha" ColumnName="fecha" />
-                <ScalarProperty Name="accion" ColumnName="accion" />
-                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
-                <ScalarProperty Name="id_prosprecto" ColumnName="id_prosprecto" />
-                <ScalarProperty Name="id_reporte" ColumnName="id_reporte" />
-                <ScalarProperty Name="id_evento" ColumnName="id_evento" />
-                <ScalarProperty Name="id_permiso" ColumnName="id_permiso" />
-                <ScalarProperty Name="id_producto" ColumnName="id_producto" />
-                <ScalarProperty Name="id_rol" ColumnName="id_rol" />
-                <ScalarProperty Name="id_seguimiento" ColumnName="id_seguimiento" />
-                <ScalarProperty Name="id_sesion" ColumnName="id_sesion" />
-                <ScalarProperty Name="id_tipo_producto" ColumnName="id_tipo_producto" />
-                <ScalarProperty Name="id_venta" ColumnName="id_venta" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="eventos">
             <EntityTypeMapping TypeName="DatabaseModel.evento">
               <MappingFragment StoreEntitySet="eventos">
@@ -1427,6 +1443,27 @@
               <ScalarProperty Name="id_permiso" ColumnName="id_permiso" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="bitacoras">
+            <EntityTypeMapping TypeName="DatabaseModel.bitacora">
+              <MappingFragment StoreEntitySet="bitacoras">
+                <ScalarProperty Name="id_usuario_afectado" ColumnName="id_usuario_afectado" />
+                <ScalarProperty Name="id_venta" ColumnName="id_venta" />
+                <ScalarProperty Name="id_tipo_producto" ColumnName="id_tipo_producto" />
+                <ScalarProperty Name="id_sesion" ColumnName="id_sesion" />
+                <ScalarProperty Name="id_seguimiento" ColumnName="id_seguimiento" />
+                <ScalarProperty Name="id_rol" ColumnName="id_rol" />
+                <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+                <ScalarProperty Name="id_permiso" ColumnName="id_permiso" />
+                <ScalarProperty Name="id_evento" ColumnName="id_evento" />
+                <ScalarProperty Name="id_reporte" ColumnName="id_reporte" />
+                <ScalarProperty Name="id_prosprecto" ColumnName="id_prosprecto" />
+                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+                <ScalarProperty Name="accion" ColumnName="accion" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="id_bitacora" ColumnName="id_bitacora" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
