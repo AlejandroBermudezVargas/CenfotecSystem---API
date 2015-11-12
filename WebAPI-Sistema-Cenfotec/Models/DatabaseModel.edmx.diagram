@@ -5,7 +5,6 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="7864e05600cf49d0a4ba664da861c25e" Name="Diagram1" ZoomLevel="101">
-        <EntityTypeShape EntityType="DatabaseModel.bitacora" Width="1.5" PointX="5.25" PointY="7.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.evento" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.permiso" Width="1.5" PointX="3" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.reporte" Width="1.5" PointX="3" PointY="16.875" IsExpanded="true" />
@@ -14,26 +13,12 @@
         <EntityTypeShape EntityType="DatabaseModel.sysdiagram" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.usuario" Width="1.5" PointX="3" PointY="12.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.venta" Width="1.5" PointX="8.25" PointY="9.5" IsExpanded="true" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_eventos" ManuallyRouted="true" >
-          <ConnectorPoint PointX="4.5" PointY="1.877825911248415" />
-          <ConnectorPoint PointX="5.46875" PointY="2.8576871744791665" />
-          <ConnectorPoint PointX="5.46875" PointY="7.8750000037422394" />
-        </AssociationConnector>
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_permisos" ManuallyRouted="false" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_reportes" ManuallyRouted="false" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_seguimientos" ManuallyRouted="false" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_sesion" ManuallyRouted="false" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_usuarios" ManuallyRouted="false" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_ventas" ManuallyRouted="false" />
         <AssociationConnector Association="DatabaseModel.FK_ventas_usuarios" ManuallyRouted="false" />
         <EntityTypeShape EntityType="DatabaseModel.prospecto" Width="1.5" PointX="5.25" PointY="18.375" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_prospectos" />
         <AssociationConnector Association="DatabaseModel.evento_prospectos" />
         <AssociationConnector Association="DatabaseModel.FK_sesion_usuarios" />
         <EntityTypeShape EntityType="DatabaseModel.producto" Width="1.5" PointX="9.75" PointY="18.75" />
         <EntityTypeShape EntityType="DatabaseModel.tipo_producto" Width="1.5" PointX="7.5" PointY="19.125" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_productos" />
-        <AssociationConnector Association="DatabaseModel.FK_bitacoras_tipo_producto" />
         <AssociationConnector Association="DatabaseModel.FK_productos_tipo_producto" />
         <AssociationConnector Association="DatabaseModel.prospecto_interes" />
         <AssociationConnector Association="DatabaseModel.usuario_producto" />
@@ -44,6 +29,18 @@
         <AssociationConnector Association="DatabaseModel.FK_kpi_tipo_kpi" />
         <AssociationConnector Association="DatabaseModel.FK_usuarios_rols" />
         <AssociationConnector Association="DatabaseModel.rol_permiso" />
+        <EntityTypeShape EntityType="DatabaseModel.bitacora" Width="1.5" PointX="12" PointY="9.375" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_eventos" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_permisos" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_productos" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_prospectos" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_reportes" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_seguimientos" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_sesion" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_tipo_producto" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_usuarios" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_usuarios2" />
+        <AssociationConnector Association="DatabaseModel.FK_bitacoras_ventas" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

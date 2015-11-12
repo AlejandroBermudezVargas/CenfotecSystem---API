@@ -16,17 +16,17 @@ namespace WebAPI_Sistema_Cenfotec.Models
     {
         public tipo_producto()
         {
-            this.bitacoras = new HashSet<bitacora>();
             this.productos = new HashSet<producto>();
             this.prospectos = new HashSet<prospecto>();
+            this.bitacoras = new HashSet<bitacora>();
         }
     
         public int id_tipo_producto { get; set; }
         public string nombre { get; set; }
         public string descripcion { get; set; }
     
-        public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual ICollection<producto> productos { get; set; }
         public virtual ICollection<prospecto> prospectos { get; set; }
+        public virtual ICollection<bitacora> bitacoras { get; set; }
     }
 }

@@ -16,10 +16,11 @@ namespace WebAPI_Sistema_Cenfotec.Models
     {
         public usuario()
         {
-            this.bitacoras = new HashSet<bitacora>();
             this.ventas = new HashSet<venta>();
             this.sesions = new HashSet<sesion>();
             this.productos = new HashSet<producto>();
+            this.bitacoras = new HashSet<bitacora>();
+            this.bitacoras1 = new HashSet<bitacora>();
         }
     
         public int id_usuario { get; set; }
@@ -33,10 +34,11 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public bool activo { get; set; }
         public System.DateTime fecha_nacimiento { get; set; }
     
-        public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual ICollection<venta> ventas { get; set; }
         public virtual ICollection<sesion> sesions { get; set; }
         public virtual ICollection<producto> productos { get; set; }
         public virtual rol rol { get; set; }
+        public virtual ICollection<bitacora> bitacoras { get; set; }
+        public virtual ICollection<bitacora> bitacoras1 { get; set; }
     }
 }
