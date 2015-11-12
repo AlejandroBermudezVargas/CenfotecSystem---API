@@ -34,7 +34,6 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public virtual DbSet<seguimiento> seguimientos { get; set; }
         public virtual DbSet<sesion> sesions { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
-        public virtual DbSet<usuario> usuarios { get; set; }
         public virtual DbSet<venta> ventas { get; set; }
         public virtual DbSet<prospecto> prospectos { get; set; }
         public virtual DbSet<producto> productos { get; set; }
@@ -43,6 +42,8 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public virtual DbSet<rol> rols { get; set; }
         public virtual DbSet<tipo_kpi> tipo_kpi { get; set; }
         public virtual DbSet<bitacora> bitacoras { get; set; }
+        public virtual DbSet<historial_contrasennas> historial_contrasennas { get; set; }
+        public virtual DbSet<usuario> usuarios { get; set; }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {

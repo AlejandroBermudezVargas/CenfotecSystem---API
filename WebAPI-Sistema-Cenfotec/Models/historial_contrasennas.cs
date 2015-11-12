@@ -12,22 +12,12 @@ namespace WebAPI_Sistema_Cenfotec.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class venta
+    public partial class historial_contrasennas
     {
-        public venta()
-        {
-            this.productos = new HashSet<producto>();
-            this.bitacoras = new HashSet<bitacora>();
-        }
-    
-        public int id_venta { get; set; }
+        public int id_historial { get; set; }
+        public string contraseña { get; set; }
         public int id_usuario { get; set; }
-        public Nullable<decimal> monto { get; set; }
-        public Nullable<System.DateTime> fecha { get; set; }
-        public string tipo { get; set; }
     
-        public virtual ICollection<producto> productos { get; set; }
-        public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual usuario usuario { get; set; }
     }
 }

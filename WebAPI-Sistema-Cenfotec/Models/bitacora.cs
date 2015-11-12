@@ -38,8 +38,8 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public virtual seguimiento seguimiento { get; set; }
         public virtual sesion sesion { get; set; }
         public virtual tipo_producto tipo_producto { get; set; }
+        public virtual venta venta { get; set; }
         public virtual usuario usuario { get; set; }
         public virtual usuario usuario1 { get; set; }
-        public virtual venta venta { get; set; }
     }
 }

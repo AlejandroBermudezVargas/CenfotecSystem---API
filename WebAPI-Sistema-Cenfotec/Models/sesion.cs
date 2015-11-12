@@ -23,7 +23,7 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public int id_usuario { get; set; }
         public System.DateTime fecha { get; set; }
     
-        public virtual usuario usuario { get; set; }
         public virtual ICollection<bitacora> bitacoras { get; set; }
+        public virtual usuario usuario { get; set; }
     }
 }

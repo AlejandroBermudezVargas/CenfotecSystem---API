@@ -42,6 +42,14 @@
           <Property Name="fecha_inicio" Type="date" Nullable="false" />
           <Property Name="fecha_fin" Type="date" Nullable="false" />
         </EntityType>
+        <EntityType Name="historial_contrasennas">
+          <Key>
+            <PropertyRef Name="id_historial" />
+          </Key>
+          <Property Name="id_historial" Type="int" Nullable="false" />
+          <Property Name="contraseña" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="id_usuario" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="kpi">
           <Key>
             <PropertyRef Name="id_kpi" />
@@ -356,6 +364,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_historial_contrasennas_usuarios">
+          <End Role="usuarios" Type="Self.usuarios" Multiplicity="1" />
+          <End Role="historial_contrasennas" Type="Self.historial_contrasennas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuarios">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="historial_contrasennas">
+              <PropertyRef Name="id_usuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_kpi_tipo_kpi">
           <End Role="tipo_kpi" Type="Self.tipo_kpi" Multiplicity="1" />
           <End Role="kpi" Type="Self.kpi" Multiplicity="*" />
@@ -547,6 +567,7 @@
           <EntitySet Name="bitacoras" EntityType="Self.bitacoras" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="evento_prospectos" EntityType="Self.evento_prospectos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="eventos" EntityType="Self.eventos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="historial_contrasennas" EntityType="Self.historial_contrasennas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="kpi" EntityType="Self.kpi" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="permisos" EntityType="Self.permisos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="productos" EntityType="Self.productos" Schema="dbo" store:Type="Tables" />
@@ -615,6 +636,10 @@
           <AssociationSet Name="FK_evento_prospectos_prospectos" Association="Self.FK_evento_prospectos_prospectos">
             <End Role="prospectos" EntitySet="prospectos" />
             <End Role="evento_prospectos" EntitySet="evento_prospectos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_historial_contrasennas_usuarios" Association="Self.FK_historial_contrasennas_usuarios">
+            <End Role="usuarios" EntitySet="usuarios" />
+            <End Role="historial_contrasennas" EntitySet="historial_contrasennas" />
           </AssociationSet>
           <AssociationSet Name="FK_kpi_tipo_kpi" Association="Self.FK_kpi_tipo_kpi">
             <End Role="tipo_kpi" EntitySet="tipo_kpi" />
@@ -720,8 +745,8 @@
           <Property Name="id_sesion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="id_usuario" Type="Int32" Nullable="false" />
           <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_sesion_usuarios" FromRole="sesion" ToRole="usuario" />
           <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_sesion" FromRole="sesion" ToRole="bitacora" />
+          <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_sesion_usuarios" FromRole="sesion" ToRole="usuario" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -733,27 +758,6 @@
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
-        <EntityType Name="usuario">
-          <Key>
-            <PropertyRef Name="id_usuario" />
-          </Key>
-          <Property Name="id_usuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="cedula" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="correo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="telefono" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="id_rol" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ventas" Relationship="Self.FK_ventas_usuarios" FromRole="usuarios" ToRole="ventas" />
-          <Property Name="activo" Type="Boolean" Nullable="false" />
-          <Property Name="fecha_nacimiento" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="sesions" Relationship="DatabaseModel.FK_sesion_usuarios" FromRole="usuario" ToRole="sesion" />
-          <NavigationProperty Name="productos" Relationship="DatabaseModel.usuario_producto" FromRole="usuario" ToRole="producto" />
-          <NavigationProperty Name="rol" Relationship="DatabaseModel.FK_usuarios_rols" FromRole="usuario" ToRole="rol" />
-          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_usuarios" FromRole="usuario" ToRole="bitacora" />
-          <NavigationProperty Name="bitacoras1" Relationship="DatabaseModel.FK_bitacoras_usuarios2" FromRole="usuario" ToRole="bitacora" />
-        </EntityType>
         <EntityType Name="venta">
           <Key>
             <PropertyRef Name="id_venta" />
@@ -763,22 +767,10 @@
           <Property Name="monto" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="fecha" Type="DateTime" Precision="0" />
           <Property Name="tipo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="usuario" Relationship="Self.FK_ventas_usuarios" FromRole="ventas" ToRole="usuarios" />
           <NavigationProperty Name="productos" Relationship="DatabaseModel.ventas_producto" FromRole="venta" ToRole="producto" />
           <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_ventas" FromRole="venta" ToRole="bitacora" />
+          <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_ventas_usuarios" FromRole="venta" ToRole="usuario" />
         </EntityType>
-        <Association Name="FK_ventas_usuarios">
-          <End Role="usuarios" Type="Self.usuario" Multiplicity="1" />
-          <End Role="ventas" Type="Self.venta" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="usuarios">
-              <PropertyRef Name="id_usuario" />
-            </Principal>
-            <Dependent Role="ventas">
-              <PropertyRef Name="id_usuario" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="DBContext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="eventos" EntityType="Self.evento" />
           <EntitySet Name="permisos" EntityType="Self.permiso" />
@@ -786,12 +778,7 @@
           <EntitySet Name="seguimientos" EntityType="Self.seguimiento" />
           <EntitySet Name="sesions" EntityType="Self.sesion" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
-          <EntitySet Name="usuarios" EntityType="Self.usuario" />
           <EntitySet Name="ventas" EntityType="Self.venta" />
-          <AssociationSet Name="FK_ventas_usuarios" Association="Self.FK_ventas_usuarios">
-            <End Role="usuarios" EntitySet="usuarios" />
-            <End Role="ventas" EntitySet="ventas" />
-          </AssociationSet>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
@@ -827,10 +814,6 @@
             <End Role="evento" EntitySet="eventos" />
             <End Role="prospecto" EntitySet="prospectos" />
           </AssociationSet>
-          <AssociationSet Name="FK_sesion_usuarios" Association="DatabaseModel.FK_sesion_usuarios">
-            <End Role="usuario" EntitySet="usuarios" />
-            <End Role="sesion" EntitySet="sesions" />
-          </AssociationSet>
           <EntitySet Name="productos" EntityType="DatabaseModel.producto" />
           <EntitySet Name="tipo_producto" EntityType="DatabaseModel.tipo_producto" />
           <AssociationSet Name="FK_productos_tipo_producto" Association="DatabaseModel.FK_productos_tipo_producto">
@@ -840,10 +823,6 @@
           <AssociationSet Name="prospecto_interes" Association="DatabaseModel.prospecto_interes">
             <End Role="prospecto" EntitySet="prospectos" />
             <End Role="tipo_producto" EntitySet="tipo_producto" />
-          </AssociationSet>
-          <AssociationSet Name="usuario_producto" Association="DatabaseModel.usuario_producto">
-            <End Role="producto" EntitySet="productos" />
-            <End Role="usuario" EntitySet="usuarios" />
           </AssociationSet>
           <AssociationSet Name="ventas_producto" Association="DatabaseModel.ventas_producto">
             <End Role="producto" EntitySet="productos" />
@@ -855,10 +834,6 @@
           <AssociationSet Name="FK_kpi_tipo_kpi" Association="DatabaseModel.FK_kpi_tipo_kpi">
             <End Role="tipo_kpi" EntitySet="tipo_kpi" />
             <End Role="kpi" EntitySet="kpis" />
-          </AssociationSet>
-          <AssociationSet Name="FK_usuarios_rols" Association="DatabaseModel.FK_usuarios_rols">
-            <End Role="rol" EntitySet="rols" />
-            <End Role="usuario" EntitySet="usuarios" />
           </AssociationSet>
           <AssociationSet Name="rol_permiso" Association="DatabaseModel.rol_permiso">
             <End Role="permiso" EntitySet="permisos" />
@@ -897,6 +872,12 @@
             <End Role="tipo_producto" EntitySet="tipo_producto" />
             <End Role="bitacora" EntitySet="bitacoras" />
           </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_ventas" Association="DatabaseModel.FK_bitacoras_ventas">
+            <End Role="venta" EntitySet="ventas" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <EntitySet Name="historial_contrasennas" EntityType="DatabaseModel.historial_contrasennas" />
+          <EntitySet Name="usuarios" EntityType="DatabaseModel.usuario" />
           <AssociationSet Name="FK_bitacoras_usuarios" Association="DatabaseModel.FK_bitacoras_usuarios">
             <End Role="usuario" EntitySet="usuarios" />
             <End Role="bitacora" EntitySet="bitacoras" />
@@ -905,9 +886,25 @@
             <End Role="usuario" EntitySet="usuarios" />
             <End Role="bitacora" EntitySet="bitacoras" />
           </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_ventas" Association="DatabaseModel.FK_bitacoras_ventas">
+          <AssociationSet Name="FK_historial_contrasennas_usuarios" Association="DatabaseModel.FK_historial_contrasennas_usuarios">
+            <End Role="usuario" EntitySet="usuarios" />
+            <End Role="historial_contrasennas" EntitySet="historial_contrasennas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_usuarios_rols" Association="DatabaseModel.FK_usuarios_rols">
+            <End Role="rol" EntitySet="rols" />
+            <End Role="usuario" EntitySet="usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sesion_usuarios" Association="DatabaseModel.FK_sesion_usuarios">
+            <End Role="usuario" EntitySet="usuarios" />
+            <End Role="sesion" EntitySet="sesions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ventas_usuarios" Association="DatabaseModel.FK_ventas_usuarios">
+            <End Role="usuario" EntitySet="usuarios" />
             <End Role="venta" EntitySet="ventas" />
-            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="usuario_producto" Association="DatabaseModel.usuario_producto">
+            <End Role="producto" EntitySet="productos" />
+            <End Role="usuario" EntitySet="usuarios" />
           </AssociationSet>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -944,18 +941,6 @@
           <End Type="DatabaseModel.evento" Role="evento" Multiplicity="*" />
           <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="*" />
         </Association>
-        <Association Name="FK_sesion_usuarios">
-          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="1" />
-          <End Type="DatabaseModel.sesion" Role="sesion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="usuario">
-              <PropertyRef Name="id_usuario" />
-            </Principal>
-            <Dependent Role="sesion">
-              <PropertyRef Name="id_usuario" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="producto">
           <Key>
             <PropertyRef Name="id_producto" />
@@ -967,9 +952,9 @@
           <Property Name="horario" Type="String" Nullable="false" MaxLength="254" FixedLength="false" Unicode="false" />
           <Property Name="id_tipo_product" Type="Int32" Nullable="false" />
           <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.FK_productos_tipo_producto" FromRole="producto" ToRole="tipo_producto" />
-          <NavigationProperty Name="usuarios" Relationship="DatabaseModel.usuario_producto" FromRole="producto" ToRole="usuario" />
           <NavigationProperty Name="ventas" Relationship="DatabaseModel.ventas_producto" FromRole="producto" ToRole="venta" />
           <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="producto" ToRole="bitacora" />
+          <NavigationProperty Name="usuarios" Relationship="DatabaseModel.usuario_producto" FromRole="producto" ToRole="usuario" />
         </EntityType>
         <EntityType Name="tipo_producto">
           <Key>
@@ -998,10 +983,6 @@
           <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="*" />
           <End Type="DatabaseModel.tipo_producto" Role="tipo_producto" Multiplicity="*" />
         </Association>
-        <Association Name="usuario_producto">
-          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
-          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="*" />
-        </Association>
         <Association Name="ventas_producto">
           <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
           <End Type="DatabaseModel.venta" Role="venta" Multiplicity="*" />
@@ -1022,8 +1003,8 @@
           <Property Name="id_rol" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="activo" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="usuarios" Relationship="DatabaseModel.FK_usuarios_rols" FromRole="rol" ToRole="usuario" />
           <NavigationProperty Name="permisos" Relationship="DatabaseModel.rol_permiso" FromRole="rol" ToRole="permiso" />
+          <NavigationProperty Name="usuarios" Relationship="DatabaseModel.FK_usuarios_rols" FromRole="rol" ToRole="usuario" />
         </EntityType>
         <EntityType Name="tipo_kpi">
           <Key>
@@ -1042,18 +1023,6 @@
             </Principal>
             <Dependent Role="kpi">
               <PropertyRef Name="id_tipo" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_usuarios_rols">
-          <End Type="DatabaseModel.rol" Role="rol" Multiplicity="1" />
-          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="rol">
-              <PropertyRef Name="id_rol" />
-            </Principal>
-            <Dependent Role="usuario">
-              <PropertyRef Name="id_rol" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1088,9 +1057,9 @@
           <NavigationProperty Name="seguimiento" Relationship="DatabaseModel.FK_bitacoras_seguimientos" FromRole="bitacora" ToRole="seguimiento" />
           <NavigationProperty Name="sesion" Relationship="DatabaseModel.FK_bitacoras_sesion" FromRole="bitacora" ToRole="sesion" />
           <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.FK_bitacoras_tipo_producto" FromRole="bitacora" ToRole="tipo_producto" />
+          <NavigationProperty Name="venta" Relationship="DatabaseModel.FK_bitacoras_ventas" FromRole="bitacora" ToRole="venta" />
           <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_bitacoras_usuarios" FromRole="bitacora" ToRole="usuario" />
           <NavigationProperty Name="usuario1" Relationship="DatabaseModel.FK_bitacoras_usuarios2" FromRole="bitacora" ToRole="usuario" />
-          <NavigationProperty Name="venta" Relationship="DatabaseModel.FK_bitacoras_ventas" FromRole="bitacora" ToRole="venta" />
         </EntityType>
         <Association Name="FK_bitacoras_eventos">
           <End Type="DatabaseModel.evento" Role="evento" Multiplicity="0..1" />
@@ -1188,6 +1157,48 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_bitacoras_ventas">
+          <End Type="DatabaseModel.venta" Role="venta" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="venta">
+              <PropertyRef Name="id_venta" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_venta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="historial_contrasennas">
+          <Key>
+            <PropertyRef Name="id_historial" />
+          </Key>
+          <Property Name="id_historial" Type="Int32" Nullable="false" />
+          <Property Name="contraseña" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="id_usuario" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_historial_contrasennas_usuarios" FromRole="historial_contrasennas" ToRole="usuario" />
+        </EntityType>
+        <EntityType Name="usuario">
+          <Key>
+            <PropertyRef Name="id_usuario" />
+          </Key>
+          <Property Name="id_usuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cedula" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="apellido" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="correo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="fecha_nacimiento" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="telefono" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="activo" Type="Boolean" Nullable="false" />
+          <Property Name="id_rol" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_usuarios" FromRole="usuario" ToRole="bitacora" />
+          <NavigationProperty Name="historial_contrasennas" Relationship="DatabaseModel.FK_historial_contrasennas_usuarios" FromRole="usuario" ToRole="historial_contrasennas" />
+          <NavigationProperty Name="rol" Relationship="DatabaseModel.FK_usuarios_rols" FromRole="usuario" ToRole="rol" />
+          <NavigationProperty Name="sesions" Relationship="DatabaseModel.FK_sesion_usuarios" FromRole="usuario" ToRole="sesion" />
+          <NavigationProperty Name="ventas" Relationship="DatabaseModel.FK_ventas_usuarios" FromRole="usuario" ToRole="venta" />
+          <NavigationProperty Name="productos" Relationship="DatabaseModel.usuario_producto" FromRole="usuario" ToRole="producto" />
+        </EntityType>
         <Association Name="FK_bitacoras_usuarios">
           <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="0..1" />
           <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
@@ -1212,17 +1223,57 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_bitacoras_ventas">
-          <End Type="DatabaseModel.venta" Role="venta" Multiplicity="0..1" />
-          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+        <Association Name="FK_historial_contrasennas_usuarios">
+          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="1" />
+          <End Type="DatabaseModel.historial_contrasennas" Role="historial_contrasennas" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="venta">
-              <PropertyRef Name="id_venta" />
+            <Principal Role="usuario">
+              <PropertyRef Name="id_usuario" />
             </Principal>
-            <Dependent Role="bitacora">
-              <PropertyRef Name="id_venta" />
+            <Dependent Role="historial_contrasennas">
+              <PropertyRef Name="id_usuario" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_usuarios_rols">
+          <End Type="DatabaseModel.rol" Role="rol" Multiplicity="1" />
+          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="rol">
+              <PropertyRef Name="id_rol" />
+            </Principal>
+            <Dependent Role="usuario">
+              <PropertyRef Name="id_rol" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sesion_usuarios">
+          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="1" />
+          <End Type="DatabaseModel.sesion" Role="sesion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuario">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="sesion">
+              <PropertyRef Name="id_usuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ventas_usuarios">
+          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="1" />
+          <End Type="DatabaseModel.venta" Role="venta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuario">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="venta">
+              <PropertyRef Name="id_usuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="usuario_producto">
+          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
+          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1285,22 +1336,6 @@
                 <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="usuarios">
-            <EntityTypeMapping TypeName="DatabaseModel.usuario">
-              <MappingFragment StoreEntitySet="usuarios">
-                <ScalarProperty Name="fecha_nacimiento" ColumnName="fecha_nacimiento" />
-                <ScalarProperty Name="activo" ColumnName="activo" />
-                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
-                <ScalarProperty Name="cedula" ColumnName="cedula" />
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="apellido" ColumnName="apellido" />
-                <ScalarProperty Name="correo" ColumnName="correo" />
-                <ScalarProperty Name="telefono" ColumnName="telefono" />
-                <ScalarProperty Name="password" ColumnName="password" />
-                <ScalarProperty Name="id_rol" ColumnName="id_rol" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1393,14 +1428,6 @@
               <ScalarProperty Name="id_prospecto" ColumnName="id_prospecto" />
             </EndProperty>
           </AssociationSetMapping>
-          <AssociationSetMapping Name="usuario_producto" TypeName="DatabaseModel.usuario_producto" StoreEntitySet="usuario_producto">
-            <EndProperty Name="usuario">
-              <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
-            </EndProperty>
-            <EndProperty Name="producto">
-              <ScalarProperty Name="id_producto" ColumnName="id_producto" />
-            </EndProperty>
-          </AssociationSetMapping>
           <AssociationSetMapping Name="ventas_producto" TypeName="DatabaseModel.ventas_producto" StoreEntitySet="ventas_producto">
             <EndProperty Name="venta">
               <ScalarProperty Name="id_venta" ColumnName="id_venta" />
@@ -1464,6 +1491,39 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="historial_contrasennas">
+            <EntityTypeMapping TypeName="DatabaseModel.historial_contrasennas">
+              <MappingFragment StoreEntitySet="historial_contrasennas">
+                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+                <ScalarProperty Name="contraseña" ColumnName="contraseña" />
+                <ScalarProperty Name="id_historial" ColumnName="id_historial" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="usuarios">
+            <EntityTypeMapping TypeName="DatabaseModel.usuario">
+              <MappingFragment StoreEntitySet="usuarios">
+                <ScalarProperty Name="id_rol" ColumnName="id_rol" />
+                <ScalarProperty Name="activo" ColumnName="activo" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="fecha_nacimiento" ColumnName="fecha_nacimiento" />
+                <ScalarProperty Name="correo" ColumnName="correo" />
+                <ScalarProperty Name="apellido" ColumnName="apellido" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="cedula" ColumnName="cedula" />
+                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="usuario_producto" TypeName="DatabaseModel.usuario_producto" StoreEntitySet="usuario_producto">
+            <EndProperty Name="usuario">
+              <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+            </EndProperty>
+            <EndProperty Name="producto">
+              <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
