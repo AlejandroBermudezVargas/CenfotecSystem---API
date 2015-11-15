@@ -12,15 +12,13 @@ using WebAPI_Sistema_Cenfotec.Models;
 
 namespace WebAPI_Sistema_Cenfotec.Controllers
 {
-    /// <summary>
-    /// autor: Alejandro Bermudez Vargas
-    /// fecha: 1/11/2015
-    /// </summary>
     public class EventsController : ApiController
     {
         private DBContext db = new DBContext();
 
+
         // GET api/Events
+        [HttpGet]
         public IQueryable<evento> Geteventos()
         {
             return db.eventos;
@@ -40,6 +38,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         }
 
         // PUT api/Events/5
+        [HttpPut]
         public IHttpActionResult Putevento(int id, evento evento)
         {
             if (!ModelState.IsValid)
@@ -89,6 +88,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         }
 
         // DELETE api/Events/5
+        [HttpDelete]
         [ResponseType(typeof(evento))]
         public IHttpActionResult Deleteevento(int id)
         {
@@ -118,4 +118,3 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             return db.eventos.Count(e => e.id_evento == id) > 0;
         }
     }
-}
