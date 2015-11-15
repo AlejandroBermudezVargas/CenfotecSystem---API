@@ -121,5 +121,15 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         {
             return db.productos.Count(e => e.id_producto == id) > 0;
         }
+
+
+        [Route("api/Sales/totalProductos")]
+        [HttpGet]
+        public int totalProductos()
+        {
+            var query = (from a in db.productos
+                         select a.id_producto).Count();
+            return query;
+        }
     }
 }
