@@ -118,3 +118,4 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             return db.eventos.Count(e => e.id_evento == id) > 0;
         }
     }
+}
