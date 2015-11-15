@@ -139,5 +139,25 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         {
             return db.prospectos.Count(e => e.id_prospecto == id) > 0;
         }
+
+        [Route("api/Sales/getTotalProspectosClientes")]
+        [HttpGet]
+        public int getTotalProspectosClientes()
+        {
+            var total = (from a in db.prospectos
+                         where a.cliente == true
+                         select a).Count();
+            return total;
+        }
+
+
+        [Route("api/Sales/getTotalProspectos")]
+        [HttpGet]
+        public int getTotalProspectos()
+        {
+            var total = (from a in db.prospectos
+                         select a).Count();
+            return total;
+        }
     }
 }

@@ -117,5 +117,31 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         {
             return db.ventas.Count(e => e.id_venta == id) > 0;
         }
+
+        [Route("api/Sales/getTotalMontoVentas")]
+        [HttpGet]
+        public decimal gettotalMontoVentas()
+        {
+            var query = (from a in db.ventas
+                         select a.monto).Sum();
+            if (query.Equals(null))
+            {
+                return 0;
+            }
+            else
+            {
+                return query.Value;
+            }
+
+        }
+
+        [Route("api/Sales/getTotalVentas")]
+        [HttpGet]
+        public int getTotalVentas()
+        {
+            var query = (from a in db.ventas
+                         select a.id_venta).Count();
+            return query;
+        }
     }
 }
