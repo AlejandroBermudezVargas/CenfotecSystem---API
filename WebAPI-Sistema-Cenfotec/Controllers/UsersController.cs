@@ -163,6 +163,11 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             usuario.password = AES256.encryptPassword(usuario.password);
             db.usuarios.Add(usuario);
             db.SaveChanges();
+            historial_contrasennas historial = new historial_contrasennas();
+            historial.id_usuario = usuario.id_usuario;
+            historial.contraseña = usuario.password;
+            db.historial_contrasennas.Add(historial);
+            db.SaveChanges();
             return CreatedAtRoute("DefaultApi", new { id = usuario.id_usuario }, usuario);
         }
         /// <summary>
