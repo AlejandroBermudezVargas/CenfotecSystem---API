@@ -16,15 +16,15 @@ namespace WebAPI_Sistema_Cenfotec.Models
     {
         public prospecto()
         {
-            this.eventos = new HashSet<evento>();
-            this.tipo_producto = new HashSet<tipo_producto>();
             this.bitacoras = new HashSet<bitacora>();
+            this.tipo_producto = new HashSet<tipo_producto>();
+            this.usuarios = new HashSet<usuario>();
         }
     
         public int id_prospecto { get; set; }
         public string nombre { get; set; }
         public string apellidos { get; set; }
-        public Nullable<System.DateTime> fecha_nacimiento { get; set; }
+        public System.DateTime fecha_nacimiento { get; set; }
         public string procedencia { get; set; }
         public bool estado { get; set; }
         public string telefono { get; set; }
@@ -32,9 +32,11 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public string direccion { get; set; }
         public bool interesado { get; set; }
         public bool cliente { get; set; }
+        public Nullable<int> id_evento { get; set; }
     
-        public virtual ICollection<evento> eventos { get; set; }
-        public virtual ICollection<tipo_producto> tipo_producto { get; set; }
         public virtual ICollection<bitacora> bitacoras { get; set; }
+        public virtual evento evento { get; set; }
+        public virtual ICollection<tipo_producto> tipo_producto { get; set; }
+        public virtual ICollection<usuario> usuarios { get; set; }
     }
 }

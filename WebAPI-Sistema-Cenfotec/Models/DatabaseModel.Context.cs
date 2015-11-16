@@ -28,15 +28,12 @@ namespace WebAPI_Sistema_Cenfotec.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<evento> eventos { get; set; }
         public virtual DbSet<permiso> permisos { get; set; }
         public virtual DbSet<reporte> reportes { get; set; }
         public virtual DbSet<seguimiento> seguimientos { get; set; }
         public virtual DbSet<sesion> sesions { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<venta> ventas { get; set; }
-        public virtual DbSet<prospecto> prospectos { get; set; }
-        public virtual DbSet<producto> productos { get; set; }
         public virtual DbSet<tipo_producto> tipo_producto { get; set; }
         public virtual DbSet<kpi> kpis { get; set; }
         public virtual DbSet<rol> rols { get; set; }
@@ -44,6 +41,9 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public virtual DbSet<bitacora> bitacoras { get; set; }
         public virtual DbSet<historial_contrasennas> historial_contrasennas { get; set; }
         public virtual DbSet<usuario> usuarios { get; set; }
+        public virtual DbSet<evento> eventos { get; set; }
+        public virtual DbSet<producto> productos { get; set; }
+        public virtual DbSet<prospecto> prospectos { get; set; }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {

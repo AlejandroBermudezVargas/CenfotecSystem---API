@@ -25,14 +25,6 @@
           <Property Name="id_venta" Type="int" />
           <Property Name="id_usuario_afectado" Type="int" />
         </EntityType>
-        <EntityType Name="evento_prospectos">
-          <Key>
-            <PropertyRef Name="id_evento" />
-            <PropertyRef Name="id_prospecto" />
-          </Key>
-          <Property Name="id_evento" Type="int" Nullable="false" />
-          <Property Name="id_prospecto" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="eventos">
           <Key>
             <PropertyRef Name="id_evento" />
@@ -76,13 +68,14 @@
           <Property Name="costo" Type="money" Nullable="false" />
           <Property Name="horario" Type="varchar" MaxLength="254" Nullable="false" />
           <Property Name="id_tipo_product" Type="int" Nullable="false" />
+          <Property Name="fecha_inicio" Type="date" />
         </EntityType>
         <EntityType Name="prospecto_interes">
           <Key>
             <PropertyRef Name="id_prospecto" />
             <PropertyRef Name="id_tipo_producto" />
           </Key>
-          <Property Name="id_prospecto" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_prospecto" Type="int" Nullable="false" />
           <Property Name="id_tipo_producto" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="prospectos">
@@ -92,14 +85,15 @@
           <Property Name="id_prospecto" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="apellidos" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="fecha_nacimiento" Type="date" />
-          <Property Name="procedencia" Type="text" />
+          <Property Name="fecha_nacimiento" Type="date" Nullable="false" />
+          <Property Name="procedencia" Type="text" Nullable="false" />
           <Property Name="estado" Type="bit" Nullable="false" />
           <Property Name="telefono" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="email" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="direccion" Type="text" />
           <Property Name="interesado" Type="bit" Nullable="false" />
           <Property Name="cliente" Type="bit" Nullable="false" />
+          <Property Name="id_evento" Type="int" />
         </EntityType>
         <EntityType Name="reportes">
           <Key>
@@ -174,6 +168,14 @@
           </Key>
           <Property Name="id_usuario" Type="int" Nullable="false" />
           <Property Name="id_producto" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="usuario_prospectos">
+          <Key>
+            <PropertyRef Name="id_usuario" />
+            <PropertyRef Name="id_prospecto" />
+          </Key>
+          <Property Name="id_usuario" Type="int" Nullable="false" />
+          <Property Name="id_prospecto" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="usuarios">
           <Key>
@@ -340,30 +342,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_evento_prospectos_eventos">
-          <End Role="eventos" Type="Self.eventos" Multiplicity="1" />
-          <End Role="evento_prospectos" Type="Self.evento_prospectos" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="eventos">
-              <PropertyRef Name="id_evento" />
-            </Principal>
-            <Dependent Role="evento_prospectos">
-              <PropertyRef Name="id_evento" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_evento_prospectos_prospectos">
-          <End Role="prospectos" Type="Self.prospectos" Multiplicity="1" />
-          <End Role="evento_prospectos" Type="Self.evento_prospectos" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="prospectos">
-              <PropertyRef Name="id_prospecto" />
-            </Principal>
-            <Dependent Role="evento_prospectos">
-              <PropertyRef Name="id_prospecto" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_historial_contrasennas_usuarios">
           <End Role="usuarios" Type="Self.usuarios" Multiplicity="1" />
           <End Role="historial_contrasennas" Type="Self.historial_contrasennas" Multiplicity="*" />
@@ -424,6 +402,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_prospectos_eventos">
+          <End Role="eventos" Type="Self.eventos" Multiplicity="0..1" />
+          <End Role="prospectos" Type="Self.prospectos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="eventos">
+              <PropertyRef Name="id_evento" />
+            </Principal>
+            <Dependent Role="prospectos">
+              <PropertyRef Name="id_evento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_rol_permiso_permisos">
           <End Role="permisos" Type="Self.permisos" Multiplicity="1" />
           <End Role="rol_permiso" Type="Self.rol_permiso" Multiplicity="*" />
@@ -480,6 +470,30 @@
               <PropertyRef Name="id_usuario" />
             </Principal>
             <Dependent Role="usuario_producto">
+              <PropertyRef Name="id_usuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_usuario_prospectos_prospectos">
+          <End Role="prospectos" Type="Self.prospectos" Multiplicity="1" />
+          <End Role="usuario_prospectos" Type="Self.usuario_prospectos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="prospectos">
+              <PropertyRef Name="id_prospecto" />
+            </Principal>
+            <Dependent Role="usuario_prospectos">
+              <PropertyRef Name="id_prospecto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_usuario_prospectos_usuarios">
+          <End Role="usuarios" Type="Self.usuarios" Multiplicity="1" />
+          <End Role="usuario_prospectos" Type="Self.usuario_prospectos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="usuarios">
+              <PropertyRef Name="id_usuario" />
+            </Principal>
+            <Dependent Role="usuario_prospectos">
               <PropertyRef Name="id_usuario" />
             </Dependent>
           </ReferentialConstraint>
@@ -565,7 +579,6 @@
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="DatabaseModelStoreContainer">
           <EntitySet Name="bitacoras" EntityType="Self.bitacoras" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="evento_prospectos" EntityType="Self.evento_prospectos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="eventos" EntityType="Self.eventos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="historial_contrasennas" EntityType="Self.historial_contrasennas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="kpi" EntityType="Self.kpi" Schema="dbo" store:Type="Tables" />
@@ -582,6 +595,7 @@
           <EntitySet Name="tipo_kpi" EntityType="Self.tipo_kpi" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_producto" EntityType="Self.tipo_producto" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="usuario_producto" EntityType="Self.usuario_producto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="usuario_prospectos" EntityType="Self.usuario_prospectos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="usuarios" EntityType="Self.usuarios" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ventas" EntityType="Self.ventas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ventas_producto" EntityType="Self.ventas_producto" Schema="dbo" store:Type="Tables" />
@@ -629,14 +643,6 @@
             <End Role="ventas" EntitySet="ventas" />
             <End Role="bitacoras" EntitySet="bitacoras" />
           </AssociationSet>
-          <AssociationSet Name="FK_evento_prospectos_eventos" Association="Self.FK_evento_prospectos_eventos">
-            <End Role="eventos" EntitySet="eventos" />
-            <End Role="evento_prospectos" EntitySet="evento_prospectos" />
-          </AssociationSet>
-          <AssociationSet Name="FK_evento_prospectos_prospectos" Association="Self.FK_evento_prospectos_prospectos">
-            <End Role="prospectos" EntitySet="prospectos" />
-            <End Role="evento_prospectos" EntitySet="evento_prospectos" />
-          </AssociationSet>
           <AssociationSet Name="FK_historial_contrasennas_usuarios" Association="Self.FK_historial_contrasennas_usuarios">
             <End Role="usuarios" EntitySet="usuarios" />
             <End Role="historial_contrasennas" EntitySet="historial_contrasennas" />
@@ -657,6 +663,10 @@
             <End Role="tipo_producto" EntitySet="tipo_producto" />
             <End Role="prospecto_interes" EntitySet="prospecto_interes" />
           </AssociationSet>
+          <AssociationSet Name="FK_prospectos_eventos" Association="Self.FK_prospectos_eventos">
+            <End Role="eventos" EntitySet="eventos" />
+            <End Role="prospectos" EntitySet="prospectos" />
+          </AssociationSet>
           <AssociationSet Name="FK_rol_permiso_permisos" Association="Self.FK_rol_permiso_permisos">
             <End Role="permisos" EntitySet="permisos" />
             <End Role="rol_permiso" EntitySet="rol_permiso" />
@@ -676,6 +686,14 @@
           <AssociationSet Name="FK_usuario_producto_usuarios" Association="Self.FK_usuario_producto_usuarios">
             <End Role="usuarios" EntitySet="usuarios" />
             <End Role="usuario_producto" EntitySet="usuario_producto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_usuario_prospectos_prospectos" Association="Self.FK_usuario_prospectos_prospectos">
+            <End Role="prospectos" EntitySet="prospectos" />
+            <End Role="usuario_prospectos" EntitySet="usuario_prospectos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_usuario_prospectos_usuarios" Association="Self.FK_usuario_prospectos_usuarios">
+            <End Role="usuarios" EntitySet="usuarios" />
+            <End Role="usuario_prospectos" EntitySet="usuario_prospectos" />
           </AssociationSet>
           <AssociationSet Name="FK_usuarios_rols" Association="Self.FK_usuarios_rols">
             <End Role="rols" EntitySet="rols" />
@@ -698,17 +716,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="evento">
-          <Key>
-            <PropertyRef Name="id_evento" />
-          </Key>
-          <Property Name="id_evento" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="lugar" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="fecha_inicio" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="fecha_fin" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="prospectos" Relationship="DatabaseModel.evento_prospectos" FromRole="evento" ToRole="prospecto" />
-          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_eventos" FromRole="evento" ToRole="bitacora" />
-        </EntityType>
         <EntityType Name="permiso">
           <Key>
             <PropertyRef Name="id_permiso" />
@@ -767,12 +774,11 @@
           <Property Name="monto" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="fecha" Type="DateTime" Precision="0" />
           <Property Name="tipo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="productos" Relationship="DatabaseModel.ventas_producto" FromRole="venta" ToRole="producto" />
           <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_ventas" FromRole="venta" ToRole="bitacora" />
           <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_ventas_usuarios" FromRole="venta" ToRole="usuario" />
+          <NavigationProperty Name="productos" Relationship="DatabaseModel.ventas_producto" FromRole="venta" ToRole="producto" />
         </EntityType>
         <EntityContainer Name="DBContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="eventos" EntityType="Self.evento" />
           <EntitySet Name="permisos" EntityType="Self.permiso" />
           <EntitySet Name="reportes" EntityType="Self.reporte" />
           <EntitySet Name="seguimientos" EntityType="Self.seguimiento" />
@@ -809,25 +815,7 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
-          <EntitySet Name="prospectos" EntityType="DatabaseModel.prospecto" />
-          <AssociationSet Name="evento_prospectos" Association="DatabaseModel.evento_prospectos">
-            <End Role="evento" EntitySet="eventos" />
-            <End Role="prospecto" EntitySet="prospectos" />
-          </AssociationSet>
-          <EntitySet Name="productos" EntityType="DatabaseModel.producto" />
           <EntitySet Name="tipo_producto" EntityType="DatabaseModel.tipo_producto" />
-          <AssociationSet Name="FK_productos_tipo_producto" Association="DatabaseModel.FK_productos_tipo_producto">
-            <End Role="tipo_producto" EntitySet="tipo_producto" />
-            <End Role="producto" EntitySet="productos" />
-          </AssociationSet>
-          <AssociationSet Name="prospecto_interes" Association="DatabaseModel.prospecto_interes">
-            <End Role="prospecto" EntitySet="prospectos" />
-            <End Role="tipo_producto" EntitySet="tipo_producto" />
-          </AssociationSet>
-          <AssociationSet Name="ventas_producto" Association="DatabaseModel.ventas_producto">
-            <End Role="producto" EntitySet="productos" />
-            <End Role="venta" EntitySet="ventas" />
-          </AssociationSet>
           <EntitySet Name="kpis" EntityType="DatabaseModel.kpi" />
           <EntitySet Name="rols" EntityType="DatabaseModel.rol" />
           <EntitySet Name="tipo_kpi" EntityType="DatabaseModel.tipo_kpi" />
@@ -840,20 +828,8 @@
             <End Role="rol" EntitySet="rols" />
           </AssociationSet>
           <EntitySet Name="bitacoras" EntityType="DatabaseModel.bitacora" />
-          <AssociationSet Name="FK_bitacoras_eventos" Association="DatabaseModel.FK_bitacoras_eventos">
-            <End Role="evento" EntitySet="eventos" />
-            <End Role="bitacora" EntitySet="bitacoras" />
-          </AssociationSet>
           <AssociationSet Name="FK_bitacoras_permisos" Association="DatabaseModel.FK_bitacoras_permisos">
             <End Role="permiso" EntitySet="permisos" />
-            <End Role="bitacora" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_productos" Association="DatabaseModel.FK_bitacoras_productos">
-            <End Role="producto" EntitySet="productos" />
-            <End Role="bitacora" EntitySet="bitacoras" />
-          </AssociationSet>
-          <AssociationSet Name="FK_bitacoras_prospectos" Association="DatabaseModel.FK_bitacoras_prospectos">
-            <End Role="prospecto" EntitySet="prospectos" />
             <End Role="bitacora" EntitySet="bitacoras" />
           </AssociationSet>
           <AssociationSet Name="FK_bitacoras_reportes" Association="DatabaseModel.FK_bitacoras_reportes">
@@ -902,9 +878,44 @@
             <End Role="usuario" EntitySet="usuarios" />
             <End Role="venta" EntitySet="ventas" />
           </AssociationSet>
+          <EntitySet Name="eventos" EntityType="DatabaseModel.evento" />
+          <EntitySet Name="productos" EntityType="DatabaseModel.producto" />
+          <EntitySet Name="prospectos" EntityType="DatabaseModel.prospecto" />
+          <AssociationSet Name="FK_bitacoras_eventos" Association="DatabaseModel.FK_bitacoras_eventos">
+            <End Role="evento" EntitySet="eventos" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_productos" Association="DatabaseModel.FK_bitacoras_productos">
+            <End Role="producto" EntitySet="productos" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bitacoras_prospectos" Association="DatabaseModel.FK_bitacoras_prospectos">
+            <End Role="prospecto" EntitySet="prospectos" />
+            <End Role="bitacora" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_prospectos_eventos" Association="DatabaseModel.FK_prospectos_eventos">
+            <End Role="evento" EntitySet="eventos" />
+            <End Role="prospecto" EntitySet="prospectos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_productos_tipo_producto" Association="DatabaseModel.FK_productos_tipo_producto">
+            <End Role="tipo_producto" EntitySet="tipo_producto" />
+            <End Role="producto" EntitySet="productos" />
+          </AssociationSet>
+          <AssociationSet Name="prospecto_interes" Association="DatabaseModel.prospecto_interes">
+            <End Role="prospecto" EntitySet="prospectos" />
+            <End Role="tipo_producto" EntitySet="tipo_producto" />
+          </AssociationSet>
           <AssociationSet Name="usuario_producto" Association="DatabaseModel.usuario_producto">
             <End Role="producto" EntitySet="productos" />
             <End Role="usuario" EntitySet="usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="usuario_prospectos" Association="DatabaseModel.usuario_prospectos">
+            <End Role="prospecto" EntitySet="prospectos" />
+            <End Role="usuario" EntitySet="usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="ventas_producto" Association="DatabaseModel.ventas_producto">
+            <End Role="producto" EntitySet="productos" />
+            <End Role="venta" EntitySet="ventas" />
           </AssociationSet>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -918,44 +929,6 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
-        <EntityType Name="prospecto">
-          <Key>
-            <PropertyRef Name="id_prospecto" />
-          </Key>
-          <Property Name="id_prospecto" Type="Int32" Nullable="false" />
-          <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="apellidos" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="fecha_nacimiento" Type="DateTime" Precision="0" />
-          <Property Name="procedencia" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="estado" Type="Boolean" Nullable="false" />
-          <Property Name="telefono" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="direccion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="interesado" Type="Boolean" Nullable="false" />
-          <Property Name="cliente" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="eventos" Relationship="DatabaseModel.evento_prospectos" FromRole="prospecto" ToRole="evento" />
-          <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.prospecto_interes" FromRole="prospecto" ToRole="tipo_producto" />
-          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_prospectos" FromRole="prospecto" ToRole="bitacora" />
-        </EntityType>
-        <Association Name="evento_prospectos">
-          <End Type="DatabaseModel.evento" Role="evento" Multiplicity="*" />
-          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="*" />
-        </Association>
-        <EntityType Name="producto">
-          <Key>
-            <PropertyRef Name="id_producto" />
-          </Key>
-          <Property Name="id_producto" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="codigo_producto" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="costo" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="horario" Type="String" Nullable="false" MaxLength="254" FixedLength="false" Unicode="false" />
-          <Property Name="id_tipo_product" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.FK_productos_tipo_producto" FromRole="producto" ToRole="tipo_producto" />
-          <NavigationProperty Name="ventas" Relationship="DatabaseModel.ventas_producto" FromRole="producto" ToRole="venta" />
-          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="producto" ToRole="bitacora" />
-          <NavigationProperty Name="usuarios" Relationship="DatabaseModel.usuario_producto" FromRole="producto" ToRole="usuario" />
-        </EntityType>
         <EntityType Name="tipo_producto">
           <Key>
             <PropertyRef Name="id_tipo_producto" />
@@ -963,30 +936,10 @@
           <Property Name="id_tipo_producto" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_tipo_producto" FromRole="tipo_producto" ToRole="bitacora" />
           <NavigationProperty Name="productos" Relationship="DatabaseModel.FK_productos_tipo_producto" FromRole="tipo_producto" ToRole="producto" />
           <NavigationProperty Name="prospectos" Relationship="DatabaseModel.prospecto_interes" FromRole="tipo_producto" ToRole="prospecto" />
-          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_tipo_producto" FromRole="tipo_producto" ToRole="bitacora" />
         </EntityType>
-        <Association Name="FK_productos_tipo_producto">
-          <End Type="DatabaseModel.tipo_producto" Role="tipo_producto" Multiplicity="1" />
-          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tipo_producto">
-              <PropertyRef Name="id_tipo_producto" />
-            </Principal>
-            <Dependent Role="producto">
-              <PropertyRef Name="id_tipo_product" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="prospecto_interes">
-          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="*" />
-          <End Type="DatabaseModel.tipo_producto" Role="tipo_producto" Multiplicity="*" />
-        </Association>
-        <Association Name="ventas_producto">
-          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
-          <End Type="DatabaseModel.venta" Role="venta" Multiplicity="*" />
-        </Association>
         <EntityType Name="kpi">
           <Key>
             <PropertyRef Name="id_kpi" />
@@ -1049,10 +1002,7 @@
           <Property Name="id_tipo_producto" Type="Int32" />
           <Property Name="id_venta" Type="Int32" />
           <Property Name="id_usuario_afectado" Type="Int32" />
-          <NavigationProperty Name="evento" Relationship="DatabaseModel.FK_bitacoras_eventos" FromRole="bitacora" ToRole="evento" />
           <NavigationProperty Name="permiso" Relationship="DatabaseModel.FK_bitacoras_permisos" FromRole="bitacora" ToRole="permiso" />
-          <NavigationProperty Name="producto" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="bitacora" ToRole="producto" />
-          <NavigationProperty Name="prospecto" Relationship="DatabaseModel.FK_bitacoras_prospectos" FromRole="bitacora" ToRole="prospecto" />
           <NavigationProperty Name="reporte" Relationship="DatabaseModel.FK_bitacoras_reportes" FromRole="bitacora" ToRole="reporte" />
           <NavigationProperty Name="seguimiento" Relationship="DatabaseModel.FK_bitacoras_seguimientos" FromRole="bitacora" ToRole="seguimiento" />
           <NavigationProperty Name="sesion" Relationship="DatabaseModel.FK_bitacoras_sesion" FromRole="bitacora" ToRole="sesion" />
@@ -1060,19 +1010,10 @@
           <NavigationProperty Name="venta" Relationship="DatabaseModel.FK_bitacoras_ventas" FromRole="bitacora" ToRole="venta" />
           <NavigationProperty Name="usuario" Relationship="DatabaseModel.FK_bitacoras_usuarios" FromRole="bitacora" ToRole="usuario" />
           <NavigationProperty Name="usuario1" Relationship="DatabaseModel.FK_bitacoras_usuarios2" FromRole="bitacora" ToRole="usuario" />
+          <NavigationProperty Name="evento" Relationship="DatabaseModel.FK_bitacoras_eventos" FromRole="bitacora" ToRole="evento" />
+          <NavigationProperty Name="producto" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="bitacora" ToRole="producto" />
+          <NavigationProperty Name="prospecto" Relationship="DatabaseModel.FK_bitacoras_prospectos" FromRole="bitacora" ToRole="prospecto" />
         </EntityType>
-        <Association Name="FK_bitacoras_eventos">
-          <End Type="DatabaseModel.evento" Role="evento" Multiplicity="0..1" />
-          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="evento">
-              <PropertyRef Name="id_evento" />
-            </Principal>
-            <Dependent Role="bitacora">
-              <PropertyRef Name="id_evento" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_bitacoras_permisos">
           <End Type="DatabaseModel.permiso" Role="permiso" Multiplicity="0..1" />
           <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
@@ -1082,30 +1023,6 @@
             </Principal>
             <Dependent Role="bitacora">
               <PropertyRef Name="id_permiso" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_productos">
-          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="0..1" />
-          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="producto">
-              <PropertyRef Name="id_producto" />
-            </Principal>
-            <Dependent Role="bitacora">
-              <PropertyRef Name="id_producto" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_bitacoras_prospectos">
-          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="0..1" />
-          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="prospecto">
-              <PropertyRef Name="id_prospecto" />
-            </Principal>
-            <Dependent Role="bitacora">
-              <PropertyRef Name="id_prosprecto" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1198,6 +1115,7 @@
           <NavigationProperty Name="sesions" Relationship="DatabaseModel.FK_sesion_usuarios" FromRole="usuario" ToRole="sesion" />
           <NavigationProperty Name="ventas" Relationship="DatabaseModel.FK_ventas_usuarios" FromRole="usuario" ToRole="venta" />
           <NavigationProperty Name="productos" Relationship="DatabaseModel.usuario_producto" FromRole="usuario" ToRole="producto" />
+          <NavigationProperty Name="prospectos" Relationship="DatabaseModel.usuario_prospectos" FromRole="usuario" ToRole="prospecto" />
         </EntityType>
         <Association Name="FK_bitacoras_usuarios">
           <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="0..1" />
@@ -1271,9 +1189,129 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="evento">
+          <Key>
+            <PropertyRef Name="id_evento" />
+          </Key>
+          <Property Name="id_evento" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="lugar" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="fecha_inicio" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="fecha_fin" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_eventos" FromRole="evento" ToRole="bitacora" />
+          <NavigationProperty Name="prospectos" Relationship="DatabaseModel.FK_prospectos_eventos" FromRole="evento" ToRole="prospecto" />
+        </EntityType>
+        <EntityType Name="producto">
+          <Key>
+            <PropertyRef Name="id_producto" />
+          </Key>
+          <Property Name="id_producto" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="codigo_producto" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="costo" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="horario" Type="String" Nullable="false" MaxLength="254" FixedLength="false" Unicode="false" />
+          <Property Name="id_tipo_product" Type="Int32" Nullable="false" />
+          <Property Name="fecha_inicio" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="producto" ToRole="bitacora" />
+          <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.FK_productos_tipo_producto" FromRole="producto" ToRole="tipo_producto" />
+          <NavigationProperty Name="usuarios" Relationship="DatabaseModel.usuario_producto" FromRole="producto" ToRole="usuario" />
+          <NavigationProperty Name="ventas" Relationship="DatabaseModel.ventas_producto" FromRole="producto" ToRole="venta" />
+        </EntityType>
+        <EntityType Name="prospecto">
+          <Key>
+            <PropertyRef Name="id_prospecto" />
+          </Key>
+          <Property Name="id_prospecto" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="apellidos" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="fecha_nacimiento" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="procedencia" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="estado" Type="Boolean" Nullable="false" />
+          <Property Name="telefono" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="direccion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="interesado" Type="Boolean" Nullable="false" />
+          <Property Name="cliente" Type="Boolean" Nullable="false" />
+          <Property Name="id_evento" Type="Int32" />
+          <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_prospectos" FromRole="prospecto" ToRole="bitacora" />
+          <NavigationProperty Name="evento" Relationship="DatabaseModel.FK_prospectos_eventos" FromRole="prospecto" ToRole="evento" />
+          <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.prospecto_interes" FromRole="prospecto" ToRole="tipo_producto" />
+          <NavigationProperty Name="usuarios" Relationship="DatabaseModel.usuario_prospectos" FromRole="prospecto" ToRole="usuario" />
+        </EntityType>
+        <Association Name="FK_bitacoras_eventos">
+          <End Type="DatabaseModel.evento" Role="evento" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="evento">
+              <PropertyRef Name="id_evento" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_evento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_productos">
+          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="producto">
+              <PropertyRef Name="id_producto" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_producto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bitacoras_prospectos">
+          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="0..1" />
+          <End Type="DatabaseModel.bitacora" Role="bitacora" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="prospecto">
+              <PropertyRef Name="id_prospecto" />
+            </Principal>
+            <Dependent Role="bitacora">
+              <PropertyRef Name="id_prosprecto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_prospectos_eventos">
+          <End Type="DatabaseModel.evento" Role="evento" Multiplicity="0..1" />
+          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="evento">
+              <PropertyRef Name="id_evento" />
+            </Principal>
+            <Dependent Role="prospecto">
+              <PropertyRef Name="id_evento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_productos_tipo_producto">
+          <End Type="DatabaseModel.tipo_producto" Role="tipo_producto" Multiplicity="1" />
+          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_producto">
+              <PropertyRef Name="id_tipo_producto" />
+            </Principal>
+            <Dependent Role="producto">
+              <PropertyRef Name="id_tipo_product" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="prospecto_interes">
+          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="*" />
+          <End Type="DatabaseModel.tipo_producto" Role="tipo_producto" Multiplicity="*" />
+        </Association>
         <Association Name="usuario_producto">
           <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
           <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="*" />
+        </Association>
+        <Association Name="usuario_prospectos">
+          <End Type="DatabaseModel.prospecto" Role="prospecto" Multiplicity="*" />
+          <End Type="DatabaseModel.usuario" Role="usuario" Multiplicity="*" />
+        </Association>
+        <Association Name="ventas_producto">
+          <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
+          <End Type="DatabaseModel.venta" Role="venta" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1281,16 +1319,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DatabaseModelStoreContainer" CdmEntityContainer="DBContext">
-          <EntitySetMapping Name="eventos">
-            <EntityTypeMapping TypeName="DatabaseModel.evento">
-              <MappingFragment StoreEntitySet="eventos">
-                <ScalarProperty Name="id_evento" ColumnName="id_evento" />
-                <ScalarProperty Name="lugar" ColumnName="lugar" />
-                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
-                <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="permisos">
             <EntityTypeMapping TypeName="DatabaseModel.permiso">
               <MappingFragment StoreEntitySet="permisos">
@@ -1374,43 +1402,6 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="DatabaseModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="DatabaseModel.Store.sp_upgraddiagrams" />
-          <EntitySetMapping Name="prospectos">
-            <EntityTypeMapping TypeName="DatabaseModel.prospecto">
-              <MappingFragment StoreEntitySet="prospectos">
-                <ScalarProperty Name="cliente" ColumnName="cliente" />
-                <ScalarProperty Name="interesado" ColumnName="interesado" />
-                <ScalarProperty Name="direccion" ColumnName="direccion" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="telefono" ColumnName="telefono" />
-                <ScalarProperty Name="estado" ColumnName="estado" />
-                <ScalarProperty Name="procedencia" ColumnName="procedencia" />
-                <ScalarProperty Name="fecha_nacimiento" ColumnName="fecha_nacimiento" />
-                <ScalarProperty Name="apellidos" ColumnName="apellidos" />
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="id_prospecto" ColumnName="id_prospecto" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <AssociationSetMapping Name="evento_prospectos" TypeName="DatabaseModel.evento_prospectos" StoreEntitySet="evento_prospectos">
-            <EndProperty Name="prospecto">
-              <ScalarProperty Name="id_prospecto" ColumnName="id_prospecto" />
-            </EndProperty>
-            <EndProperty Name="evento">
-              <ScalarProperty Name="id_evento" ColumnName="id_evento" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <EntitySetMapping Name="productos">
-            <EntityTypeMapping TypeName="DatabaseModel.producto">
-              <MappingFragment StoreEntitySet="productos">
-                <ScalarProperty Name="id_tipo_product" ColumnName="id_tipo_product" />
-                <ScalarProperty Name="horario" ColumnName="horario" />
-                <ScalarProperty Name="costo" ColumnName="costo" />
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="codigo_producto" ColumnName="codigo_producto" />
-                <ScalarProperty Name="id_producto" ColumnName="id_producto" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tipo_producto">
             <EntityTypeMapping TypeName="DatabaseModel.tipo_producto">
               <MappingFragment StoreEntitySet="tipo_producto">
@@ -1420,22 +1411,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="prospecto_interes" TypeName="DatabaseModel.prospecto_interes" StoreEntitySet="prospecto_interes">
-            <EndProperty Name="tipo_producto">
-              <ScalarProperty Name="id_tipo_producto" ColumnName="id_tipo_producto" />
-            </EndProperty>
-            <EndProperty Name="prospecto">
-              <ScalarProperty Name="id_prospecto" ColumnName="id_prospecto" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <AssociationSetMapping Name="ventas_producto" TypeName="DatabaseModel.ventas_producto" StoreEntitySet="ventas_producto">
-            <EndProperty Name="venta">
-              <ScalarProperty Name="id_venta" ColumnName="id_venta" />
-            </EndProperty>
-            <EndProperty Name="producto">
-              <ScalarProperty Name="id_producto" ColumnName="id_producto" />
-            </EndProperty>
-          </AssociationSetMapping>
           <EntitySetMapping Name="kpis">
             <EntityTypeMapping TypeName="DatabaseModel.kpi">
               <MappingFragment StoreEntitySet="kpi">
@@ -1516,9 +1491,74 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="eventos">
+            <EntityTypeMapping TypeName="DatabaseModel.evento">
+              <MappingFragment StoreEntitySet="eventos">
+                <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
+                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
+                <ScalarProperty Name="lugar" ColumnName="lugar" />
+                <ScalarProperty Name="id_evento" ColumnName="id_evento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="productos">
+            <EntityTypeMapping TypeName="DatabaseModel.producto">
+              <MappingFragment StoreEntitySet="productos">
+                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
+                <ScalarProperty Name="id_tipo_product" ColumnName="id_tipo_product" />
+                <ScalarProperty Name="horario" ColumnName="horario" />
+                <ScalarProperty Name="costo" ColumnName="costo" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="codigo_producto" ColumnName="codigo_producto" />
+                <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="prospectos">
+            <EntityTypeMapping TypeName="DatabaseModel.prospecto">
+              <MappingFragment StoreEntitySet="prospectos">
+                <ScalarProperty Name="id_evento" ColumnName="id_evento" />
+                <ScalarProperty Name="cliente" ColumnName="cliente" />
+                <ScalarProperty Name="interesado" ColumnName="interesado" />
+                <ScalarProperty Name="direccion" ColumnName="direccion" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="procedencia" ColumnName="procedencia" />
+                <ScalarProperty Name="fecha_nacimiento" ColumnName="fecha_nacimiento" />
+                <ScalarProperty Name="apellidos" ColumnName="apellidos" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="id_prospecto" ColumnName="id_prospecto" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="prospecto_interes" TypeName="DatabaseModel.prospecto_interes" StoreEntitySet="prospecto_interes">
+            <EndProperty Name="tipo_producto">
+              <ScalarProperty Name="id_tipo_producto" ColumnName="id_tipo_producto" />
+            </EndProperty>
+            <EndProperty Name="prospecto">
+              <ScalarProperty Name="id_prospecto" ColumnName="id_prospecto" />
+            </EndProperty>
+          </AssociationSetMapping>
           <AssociationSetMapping Name="usuario_producto" TypeName="DatabaseModel.usuario_producto" StoreEntitySet="usuario_producto">
             <EndProperty Name="usuario">
               <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+            </EndProperty>
+            <EndProperty Name="producto">
+              <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="usuario_prospectos" TypeName="DatabaseModel.usuario_prospectos" StoreEntitySet="usuario_prospectos">
+            <EndProperty Name="usuario">
+              <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+            </EndProperty>
+            <EndProperty Name="prospecto">
+              <ScalarProperty Name="id_prospecto" ColumnName="id_prospecto" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ventas_producto" TypeName="DatabaseModel.ventas_producto" StoreEntitySet="ventas_producto">
+            <EndProperty Name="venta">
+              <ScalarProperty Name="id_venta" ColumnName="id_venta" />
             </EndProperty>
             <EndProperty Name="producto">
               <ScalarProperty Name="id_producto" ColumnName="id_producto" />
