@@ -38,7 +38,7 @@
           <Key>
             <PropertyRef Name="id_historial" />
           </Key>
-          <Property Name="id_historial" Type="int" Nullable="false" />
+          <Property Name="id_historial" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="contraseña" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="id_usuario" Type="int" Nullable="false" />
         </EntityType>
