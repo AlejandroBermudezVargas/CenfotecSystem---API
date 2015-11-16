@@ -68,7 +68,6 @@
           <Property Name="costo" Type="money" Nullable="false" />
           <Property Name="horario" Type="varchar" MaxLength="254" Nullable="false" />
           <Property Name="id_tipo_product" Type="int" Nullable="false" />
-          <Property Name="fecha_inicio" Type="date" />
         </EntityType>
         <EntityType Name="prospecto_interes">
           <Key>
@@ -1210,7 +1209,6 @@
           <Property Name="costo" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="horario" Type="String" Nullable="false" MaxLength="254" FixedLength="false" Unicode="false" />
           <Property Name="id_tipo_product" Type="Int32" Nullable="false" />
-          <Property Name="fecha_inicio" Type="DateTime" Precision="0" />
           <NavigationProperty Name="bitacoras" Relationship="DatabaseModel.FK_bitacoras_productos" FromRole="producto" ToRole="bitacora" />
           <NavigationProperty Name="tipo_producto" Relationship="DatabaseModel.FK_productos_tipo_producto" FromRole="producto" ToRole="tipo_producto" />
           <NavigationProperty Name="usuarios" Relationship="DatabaseModel.usuario_producto" FromRole="producto" ToRole="usuario" />
@@ -1504,7 +1502,6 @@
           <EntitySetMapping Name="productos">
             <EntityTypeMapping TypeName="DatabaseModel.producto">
               <MappingFragment StoreEntitySet="productos">
-                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
                 <ScalarProperty Name="id_tipo_product" ColumnName="id_tipo_product" />
                 <ScalarProperty Name="horario" ColumnName="horario" />
                 <ScalarProperty Name="costo" ColumnName="costo" />

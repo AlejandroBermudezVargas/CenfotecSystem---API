@@ -27,7 +27,6 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public decimal costo { get; set; }
         public string horario { get; set; }
         public int id_tipo_product { get; set; }
-        public Nullable<System.DateTime> fecha_inicio { get; set; }
     
         public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual tipo_producto tipo_producto { get; set; }
