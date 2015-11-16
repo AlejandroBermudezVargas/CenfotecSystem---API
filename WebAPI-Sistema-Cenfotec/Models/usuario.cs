@@ -21,6 +21,7 @@ namespace WebAPI_Sistema_Cenfotec.Models
             this.sesions = new HashSet<sesion>();
             this.ventas = new HashSet<venta>();
             this.productos = new HashSet<producto>();
+            this.prospectos = new HashSet<prospecto>();
         }
     
         public int id_usuario { get; set; }
@@ -40,5 +41,6 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public virtual ICollection<sesion> sesions { get; set; }
         public virtual ICollection<venta> ventas { get; set; }
         public virtual ICollection<producto> productos { get; set; }
+        public virtual ICollection<prospecto> prospectos { get; set; }
     }
 }
