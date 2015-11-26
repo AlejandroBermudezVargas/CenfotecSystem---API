@@ -163,6 +163,11 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             usuario.password = AES256.encryptPassword(usuario.password);
             db.usuarios.Add(usuario);
             db.SaveChanges();
+            historial_contrasennas historial = new historial_contrasennas();
+            historial.id_usuario = usuario.id_usuario;
+            historial.contraseña = usuario.password;
+            db.historial_contrasennas.Add(historial);
+            db.SaveChanges();
             return CreatedAtRoute("DefaultApi", new { id = usuario.id_usuario }, usuario);
         }
         /// <summary>
@@ -199,6 +204,51 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         private bool usuarioExists(int id)
         {
             return db.usuarios.Count(e => e.id_usuario == id) > 0;
+        }
+
+        // PUT api/Users/assign/5
+        [Route("api/Users/assign/{id}")]
+        [HttpPut]
+        public IHttpActionResult Putusuario(int id, usuario pusuario)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != pusuario.id_usuario)
+            {
+                return BadRequest();
+            }
+            usuario user = db.usuarios.Find(pusuario.id_usuario);
+            if (pusuario.prospectos != null)
+            {
+
+                for (int i = 0; i < pusuario.prospectos.Count; i++)
+                {
+                    user.prospectos.Add(db.prospectos.Find(pusuario.prospectos.ElementAt(i).id_prospecto));
+                }
+            }
+            user.rol = db.rols.Find(user.id_rol);
+            db.Entry(user).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!usuarioExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
         }
     }
 }

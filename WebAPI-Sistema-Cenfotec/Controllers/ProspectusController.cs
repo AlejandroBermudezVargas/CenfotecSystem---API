@@ -54,6 +54,20 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
 
             db.Entry(prospecto).State = EntityState.Modified;
 
+            if (prospecto.tipo_producto != null)
+            {
+                for (int i = 0; i < prospecto.tipo_producto.Count; i++)
+                {
+                    tipo_producto tp = prospecto.tipo_producto.ElementAt(i);
+                    prospecto.tipo_producto.Remove(tp);
+                    prospecto.tipo_producto.Add(db.tipo_producto.Find(tp.id_tipo_producto));
+                }
+            }
+            if (prospecto.id_evento == 0)
+            {
+                prospecto.id_evento = null;
+            }
+
             try
             {
                 db.SaveChanges();
@@ -89,6 +103,10 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                     prospecto.tipo_producto.Remove(tp);
                     prospecto.tipo_producto.Add(db.tipo_producto.Find(tp.id_tipo_producto));
                 }
+            }
+            if (prospecto.id_evento == 0) 
+            {
+                prospecto.id_evento = null;
             }
             try
             {
