@@ -221,15 +221,21 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                 return BadRequest();
             }
             usuario user = db.usuarios.Find(pusuario.id_usuario);
+            db.Entry(user).Collection(p => p.prospectos).Load();
+
             if (pusuario.prospectos != null)
             {
+                int cantProspectos = user.prospectos.Count;
+                for (int x = 0; x < cantProspectos; x++) 
+                {
+                    user.prospectos.Remove(user.prospectos.ElementAt(0));
+                }
 
                 for (int i = 0; i < pusuario.prospectos.Count; i++)
                 {
                     user.prospectos.Add(db.prospectos.Find(pusuario.prospectos.ElementAt(i).id_prospecto));
                 }
             }
-            user.rol = db.rols.Find(user.id_rol);
             db.Entry(user).State = EntityState.Modified;
 
             try
@@ -249,6 +255,21 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // GET api/Users/getassign/5
+        [Route("api/Users/getassign/{id}")]
+        [HttpGet]
+        public IHttpActionResult Getassign(int id)
+        {
+            usuario usuario = db.usuarios.Find(id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+            usuario.rol = db.rols.Find(usuario.id_rol);
+            db.Entry(usuario).Collection(p => p.prospectos).Load();
+            return Ok(usuario);
         }
     }
 }
