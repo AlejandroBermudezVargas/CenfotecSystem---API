@@ -74,6 +74,11 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                 }
             }
 
+            if (prospectoBD.id_evento == 0)
+            {
+                prospectoBD.id_evento = null;
+            }
+
             db.Entry(prospectoBD).State = EntityState.Modified;
 
             try
