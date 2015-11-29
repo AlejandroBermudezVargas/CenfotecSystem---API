@@ -209,7 +209,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         // PUT api/Users/assign/5
         [Route("api/Users/assign/{id}")]
         [HttpPut]
-        public IHttpActionResult Putusuario(int id, usuario pusuario)
+        public IHttpActionResult Putprospusuario(int id, usuario pusuario)
         {
             if (!ModelState.IsValid)
             {
