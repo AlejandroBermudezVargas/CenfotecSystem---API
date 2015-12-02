@@ -12,19 +12,12 @@ namespace WebAPI_Sistema_Cenfotec.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class rol
+    public partial class pregunta
     {
-        public rol()
-        {
-            this.permisos = new HashSet<permiso>();
-            this.usuarios = new HashSet<usuario>();
-        }
+        public int id_pregunta { get; set; }
+        public string pregunta1 { get; set; }
+        public int id_respuesta { get; set; }
     
-        public int id_rol { get; set; }
-        public string nombre { get; set; }
-        public bool activo { get; set; }
-    
-        public virtual ICollection<permiso> permisos { get; set; }
-        public virtual ICollection<usuario> usuarios { get; set; }
+        public virtual respuesta respuesta { get; set; }
     }
 }

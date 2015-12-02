@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="bitacoras">
           <Key>
             <PropertyRef Name="id_bitacora" />
@@ -58,6 +58,14 @@
           <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="descripcion" Type="varchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="preguntas">
+          <Key>
+            <PropertyRef Name="id_pregunta" />
+          </Key>
+          <Property Name="id_pregunta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="pregunta" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="id_respuesta" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="productos">
           <Key>
             <PropertyRef Name="id_producto" />
@@ -101,6 +109,14 @@
           <Property Name="id_reporte" Type="int" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="descripcion" Type="text" Nullable="false" />
+        </EntityType>
+        <EntityType Name="respuestas">
+          <Key>
+            <PropertyRef Name="id_respuesta" />
+          </Key>
+          <Property Name="id_respuesta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="respuesta" Type="varchar" MaxLength="50" />
+          <Property Name="puntaje" Type="int" />
         </EntityType>
         <EntityType Name="rol_permiso">
           <Key>
@@ -365,6 +381,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_preguntas_respuestas">
+          <End Role="respuestas" Type="Self.respuestas" Multiplicity="1" />
+          <End Role="preguntas" Type="Self.preguntas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="respuestas">
+              <PropertyRef Name="id_respuesta" />
+            </Principal>
+            <Dependent Role="preguntas">
+              <PropertyRef Name="id_respuesta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_productos_tipo_producto">
           <End Role="tipo_producto" Type="Self.tipo_producto" Multiplicity="1" />
           <End Role="productos" Type="Self.productos" Multiplicity="*" />
@@ -582,10 +610,12 @@
           <EntitySet Name="historial_contrasennas" EntityType="Self.historial_contrasennas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="kpi" EntityType="Self.kpi" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="permisos" EntityType="Self.permisos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="preguntas" EntityType="Self.preguntas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="productos" EntityType="Self.productos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="prospecto_interes" EntityType="Self.prospecto_interes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="prospectos" EntityType="Self.prospectos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="reportes" EntityType="Self.reportes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="respuestas" EntityType="Self.respuestas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rol_permiso" EntityType="Self.rol_permiso" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rols" EntityType="Self.rols" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="seguimientos" EntityType="Self.seguimientos" Schema="dbo" store:Type="Tables" />
@@ -649,6 +679,10 @@
           <AssociationSet Name="FK_kpi_tipo_kpi" Association="Self.FK_kpi_tipo_kpi">
             <End Role="tipo_kpi" EntitySet="tipo_kpi" />
             <End Role="kpi" EntitySet="kpi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_preguntas_respuestas" Association="Self.FK_preguntas_respuestas">
+            <End Role="respuestas" EntitySet="respuestas" />
+            <End Role="preguntas" EntitySet="preguntas" />
           </AssociationSet>
           <AssociationSet Name="FK_productos_tipo_producto" Association="Self.FK_productos_tipo_producto">
             <End Role="tipo_producto" EntitySet="tipo_producto" />
@@ -915,6 +949,12 @@
           <AssociationSet Name="ventas_producto" Association="DatabaseModel.ventas_producto">
             <End Role="producto" EntitySet="productos" />
             <End Role="venta" EntitySet="ventas" />
+          </AssociationSet>
+          <EntitySet Name="preguntas" EntityType="DatabaseModel.pregunta" />
+          <EntitySet Name="respuestas" EntityType="DatabaseModel.respuesta" />
+          <AssociationSet Name="FK_preguntas_respuestas" Association="DatabaseModel.FK_preguntas_respuestas">
+            <End Role="respuesta" EntitySet="respuestas" />
+            <End Role="pregunta" EntitySet="preguntas" />
           </AssociationSet>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -1311,6 +1351,36 @@
           <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
           <End Type="DatabaseModel.venta" Role="venta" Multiplicity="*" />
         </Association>
+        <EntityType Name="pregunta">
+          <Key>
+            <PropertyRef Name="id_pregunta" />
+          </Key>
+          <Property Name="id_pregunta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="pregunta1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="id_respuesta" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="respuesta" Relationship="DatabaseModel.FK_preguntas_respuestas" FromRole="pregunta" ToRole="respuesta" />
+        </EntityType>
+        <EntityType Name="respuesta">
+          <Key>
+            <PropertyRef Name="id_respuesta" />
+          </Key>
+          <Property Name="id_respuesta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="respuesta1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="puntaje" Type="Int32" />
+          <NavigationProperty Name="preguntas" Relationship="DatabaseModel.FK_preguntas_respuestas" FromRole="respuesta" ToRole="pregunta" />
+        </EntityType>
+        <Association Name="FK_preguntas_respuestas">
+          <End Type="DatabaseModel.respuesta" Role="respuesta" Multiplicity="1" />
+          <End Type="DatabaseModel.pregunta" Role="pregunta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="respuesta">
+              <PropertyRef Name="id_respuesta" />
+            </Principal>
+            <Dependent Role="pregunta">
+              <PropertyRef Name="id_respuesta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1561,6 +1631,24 @@
               <ScalarProperty Name="id_producto" ColumnName="id_producto" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="preguntas">
+            <EntityTypeMapping TypeName="DatabaseModel.pregunta">
+              <MappingFragment StoreEntitySet="preguntas">
+                <ScalarProperty Name="id_respuesta" ColumnName="id_respuesta" />
+                <ScalarProperty Name="pregunta1" ColumnName="pregunta" />
+                <ScalarProperty Name="id_pregunta" ColumnName="id_pregunta" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="respuestas">
+            <EntityTypeMapping TypeName="DatabaseModel.respuesta">
+              <MappingFragment StoreEntitySet="respuestas">
+                <ScalarProperty Name="puntaje" ColumnName="puntaje" />
+                <ScalarProperty Name="respuesta1" ColumnName="respuesta" />
+                <ScalarProperty Name="id_respuesta" ColumnName="id_respuesta" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
