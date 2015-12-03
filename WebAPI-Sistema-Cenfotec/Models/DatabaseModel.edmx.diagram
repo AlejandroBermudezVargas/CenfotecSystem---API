@@ -44,9 +44,11 @@
         <AssociationConnector Association="DatabaseModel.usuario_producto" />
         <AssociationConnector Association="DatabaseModel.usuario_prospectos" />
         <AssociationConnector Association="DatabaseModel.ventas_producto" />
-        <EntityTypeShape EntityType="DatabaseModel.pregunta" Width="1.5" PointX="3" PointY="0.875" />
-        <EntityTypeShape EntityType="DatabaseModel.respuesta" Width="1.5" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="DatabaseModel.evaluacione" Width="1.5" PointX="0.75" PointY="3.875" />
+        <EntityTypeShape EntityType="DatabaseModel.pregunta" Width="1.5" PointX="3" PointY="6.875" />
+        <EntityTypeShape EntityType="DatabaseModel.respuesta" Width="1.5" PointX="0.75" PointY="7" />
         <AssociationConnector Association="DatabaseModel.FK_preguntas_respuestas" />
+        <AssociationConnector Association="DatabaseModel.evaluacion_preguntas" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

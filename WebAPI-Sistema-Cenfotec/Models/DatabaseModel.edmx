@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="bitacoras">
           <Key>
             <PropertyRef Name="id_bitacora" />
@@ -24,6 +24,23 @@
           <Property Name="id_tipo_producto" Type="int" />
           <Property Name="id_venta" Type="int" />
           <Property Name="id_usuario_afectado" Type="int" />
+        </EntityType>
+        <EntityType Name="evaluacion_preguntas">
+          <Key>
+            <PropertyRef Name="id_evaluacion" />
+            <PropertyRef Name="id_pregunta" />
+          </Key>
+          <Property Name="id_evaluacion" Type="int" Nullable="false" />
+          <Property Name="id_pregunta" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="evaluaciones">
+          <Key>
+            <PropertyRef Name="id_evaluacion" />
+          </Key>
+          <Property Name="id_evaluacion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="usuario_evaluado" Type="int" Nullable="false" />
+          <Property Name="porcentaje_desactivacion" Type="int" Nullable="false" />
+          <Property Name="curso_evaluado" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="eventos">
           <Key>
@@ -115,8 +132,8 @@
             <PropertyRef Name="id_respuesta" />
           </Key>
           <Property Name="id_respuesta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="respuesta" Type="varchar" MaxLength="50" />
-          <Property Name="puntaje" Type="int" />
+          <Property Name="respuesta" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="puntaje" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="rol_permiso">
           <Key>
@@ -354,6 +371,30 @@
             </Principal>
             <Dependent Role="bitacoras">
               <PropertyRef Name="id_venta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_evaluacion_preguntas_evaluaciones">
+          <End Role="evaluaciones" Type="Self.evaluaciones" Multiplicity="1" />
+          <End Role="evaluacion_preguntas" Type="Self.evaluacion_preguntas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="evaluaciones">
+              <PropertyRef Name="id_evaluacion" />
+            </Principal>
+            <Dependent Role="evaluacion_preguntas">
+              <PropertyRef Name="id_evaluacion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_evaluacion_preguntas_preguntas">
+          <End Role="preguntas" Type="Self.preguntas" Multiplicity="1" />
+          <End Role="evaluacion_preguntas" Type="Self.evaluacion_preguntas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="preguntas">
+              <PropertyRef Name="id_pregunta" />
+            </Principal>
+            <Dependent Role="evaluacion_preguntas">
+              <PropertyRef Name="id_pregunta" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -606,6 +647,8 @@
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="DatabaseModelStoreContainer">
           <EntitySet Name="bitacoras" EntityType="Self.bitacoras" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="evaluacion_preguntas" EntityType="Self.evaluacion_preguntas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="evaluaciones" EntityType="Self.evaluaciones" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="eventos" EntityType="Self.eventos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="historial_contrasennas" EntityType="Self.historial_contrasennas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="kpi" EntityType="Self.kpi" Schema="dbo" store:Type="Tables" />
@@ -671,6 +714,14 @@
           <AssociationSet Name="FK_bitacoras_ventas" Association="Self.FK_bitacoras_ventas">
             <End Role="ventas" EntitySet="ventas" />
             <End Role="bitacoras" EntitySet="bitacoras" />
+          </AssociationSet>
+          <AssociationSet Name="FK_evaluacion_preguntas_evaluaciones" Association="Self.FK_evaluacion_preguntas_evaluaciones">
+            <End Role="evaluaciones" EntitySet="evaluaciones" />
+            <End Role="evaluacion_preguntas" EntitySet="evaluacion_preguntas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_evaluacion_preguntas_preguntas" Association="Self.FK_evaluacion_preguntas_preguntas">
+            <End Role="preguntas" EntitySet="preguntas" />
+            <End Role="evaluacion_preguntas" EntitySet="evaluacion_preguntas" />
           </AssociationSet>
           <AssociationSet Name="FK_historial_contrasennas_usuarios" Association="Self.FK_historial_contrasennas_usuarios">
             <End Role="usuarios" EntitySet="usuarios" />
@@ -950,10 +1001,15 @@
             <End Role="producto" EntitySet="productos" />
             <End Role="venta" EntitySet="ventas" />
           </AssociationSet>
+          <EntitySet Name="evaluaciones" EntityType="DatabaseModel.evaluacione" />
           <EntitySet Name="preguntas" EntityType="DatabaseModel.pregunta" />
           <EntitySet Name="respuestas" EntityType="DatabaseModel.respuesta" />
           <AssociationSet Name="FK_preguntas_respuestas" Association="DatabaseModel.FK_preguntas_respuestas">
             <End Role="respuesta" EntitySet="respuestas" />
+            <End Role="pregunta" EntitySet="preguntas" />
+          </AssociationSet>
+          <AssociationSet Name="evaluacion_preguntas" Association="DatabaseModel.evaluacion_preguntas">
+            <End Role="evaluacione" EntitySet="evaluaciones" />
             <End Role="pregunta" EntitySet="preguntas" />
           </AssociationSet>
         </EntityContainer>
@@ -1351,6 +1407,16 @@
           <End Type="DatabaseModel.producto" Role="producto" Multiplicity="*" />
           <End Type="DatabaseModel.venta" Role="venta" Multiplicity="*" />
         </Association>
+        <EntityType Name="evaluacione">
+          <Key>
+            <PropertyRef Name="id_evaluacion" />
+          </Key>
+          <Property Name="id_evaluacion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="usuario_evaluado" Type="Int32" Nullable="false" />
+          <Property Name="porcentaje_desactivacion" Type="Int32" Nullable="false" />
+          <Property Name="curso_evaluado" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="preguntas" Relationship="DatabaseModel.evaluacion_preguntas" FromRole="evaluacione" ToRole="pregunta" />
+        </EntityType>
         <EntityType Name="pregunta">
           <Key>
             <PropertyRef Name="id_pregunta" />
@@ -1359,14 +1425,15 @@
           <Property Name="pregunta1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="id_respuesta" Type="Int32" Nullable="false" />
           <NavigationProperty Name="respuesta" Relationship="DatabaseModel.FK_preguntas_respuestas" FromRole="pregunta" ToRole="respuesta" />
+          <NavigationProperty Name="evaluaciones" Relationship="DatabaseModel.evaluacion_preguntas" FromRole="pregunta" ToRole="evaluacione" />
         </EntityType>
         <EntityType Name="respuesta">
           <Key>
             <PropertyRef Name="id_respuesta" />
           </Key>
           <Property Name="id_respuesta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="respuesta1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="puntaje" Type="Int32" />
+          <Property Name="respuesta1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="puntaje" Type="Int32" Nullable="false" />
           <NavigationProperty Name="preguntas" Relationship="DatabaseModel.FK_preguntas_respuestas" FromRole="respuesta" ToRole="pregunta" />
         </EntityType>
         <Association Name="FK_preguntas_respuestas">
@@ -1380,6 +1447,10 @@
               <PropertyRef Name="id_respuesta" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <Association Name="evaluacion_preguntas">
+          <End Type="DatabaseModel.evaluacione" Role="evaluacione" Multiplicity="*" />
+          <End Type="DatabaseModel.pregunta" Role="pregunta" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1631,6 +1702,16 @@
               <ScalarProperty Name="id_producto" ColumnName="id_producto" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="evaluaciones">
+            <EntityTypeMapping TypeName="DatabaseModel.evaluacione">
+              <MappingFragment StoreEntitySet="evaluaciones">
+                <ScalarProperty Name="curso_evaluado" ColumnName="curso_evaluado" />
+                <ScalarProperty Name="porcentaje_desactivacion" ColumnName="porcentaje_desactivacion" />
+                <ScalarProperty Name="usuario_evaluado" ColumnName="usuario_evaluado" />
+                <ScalarProperty Name="id_evaluacion" ColumnName="id_evaluacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="preguntas">
             <EntityTypeMapping TypeName="DatabaseModel.pregunta">
               <MappingFragment StoreEntitySet="preguntas">
@@ -1649,7 +1730,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          <AssociationSetMapping Name="evaluacion_preguntas" TypeName="DatabaseModel.evaluacion_preguntas" StoreEntitySet="evaluacion_preguntas">
+            <EndProperty Name="pregunta">
+              <ScalarProperty Name="id_pregunta" ColumnName="id_pregunta" />
+            </EndProperty>
+            <EndProperty Name="evaluacione">
+              <ScalarProperty Name="id_evaluacion" ColumnName="id_evaluacion" />
+            </EndProperty>
+          </AssociationSetMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
