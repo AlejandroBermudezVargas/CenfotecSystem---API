@@ -31,6 +31,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         public IHttpActionResult Getprospecto(int id)
         {
             prospecto prospecto = db.prospectos.Find(id);
+            db.Entry(prospecto).Collection(i => i.tipo_producto).Load();
             if (prospecto == null)
             {
                 return NotFound();
@@ -52,21 +53,33 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                 return BadRequest();
             }
 
-            db.Entry(prospecto).State = EntityState.Modified;
+            prospecto prospectoBD = db.prospectos.Find(id);
+            prospectoBD.id_evento = prospecto.id_evento;
 
             if (prospecto.tipo_producto != null)
             {
+                
+                db.Entry(prospectoBD).Collection(p => p.tipo_producto).Load();
+
+                int cantIntereses = prospectoBD.tipo_producto.Count;
+                for (int x = 0; x < cantIntereses; x++)
+                {
+                    prospectoBD.tipo_producto.Remove(prospectoBD.tipo_producto.ElementAt(0));
+                }
+
                 for (int i = 0; i < prospecto.tipo_producto.Count; i++)
                 {
                     tipo_producto tp = prospecto.tipo_producto.ElementAt(i);
-                    prospecto.tipo_producto.Remove(tp);
-                    prospecto.tipo_producto.Add(db.tipo_producto.Find(tp.id_tipo_producto));
+                    prospectoBD.tipo_producto.Add(db.tipo_producto.Find(tp.id_tipo_producto));
                 }
             }
-            if (prospecto.id_evento == 0)
+
+            if (prospectoBD.id_evento == 0)
             {
-                prospecto.id_evento = null;
+                prospectoBD.id_evento = null;
             }
+
+            db.Entry(prospectoBD).State = EntityState.Modified;
 
             try
             {

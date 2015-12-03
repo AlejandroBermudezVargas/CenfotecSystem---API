@@ -12,20 +12,18 @@ namespace WebAPI_Sistema_Cenfotec.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class evento
+    public partial class evaluacione
     {
-        public evento()
+        public evaluacione()
         {
-            this.bitacoras = new HashSet<bitacora>();
-            this.prospectos = new HashSet<prospecto>();
+            this.preguntas = new HashSet<pregunta>();
         }
     
-        public int id_evento { get; set; }
-        public string lugar { get; set; }
-        public System.DateTime fecha_inicio { get; set; }
-        public System.DateTime fecha_fin { get; set; }
+        public int id_evaluacion { get; set; }
+        public int usuario_evaluado { get; set; }
+        public int porcentaje_desactivacion { get; set; }
+        public int curso_evaluado { get; set; }
     
-        public virtual ICollection<bitacora> bitacoras { get; set; }
-        public virtual ICollection<prospecto> prospectos { get; set; }
+        public virtual ICollection<pregunta> preguntas { get; set; }
     }
 }
