@@ -31,6 +31,18 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             return db.usuarios;
         }
 
+        /// <summary>
+        /// <autor>Alejandro Bermudez Vargas</autor>
+        /// <date>4/12/2015</date>
+        /// <usecase>Create evaluation</usecase>
+        /// </summary>
+        [Route("api/Users/getTeachers")]
+        [HttpGet]
+        public IQueryable<usuario> getTeachers()
+        {
+            return (db.usuarios.Where(u => u.id_rol == 5));
+        }
+
         // GET api/Users/5
         [ResponseType(typeof(usuario))]
         public IHttpActionResult Getusuario(int id)
