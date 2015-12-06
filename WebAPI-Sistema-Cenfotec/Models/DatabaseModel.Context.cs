@@ -44,8 +44,9 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public virtual DbSet<evento> eventos { get; set; }
         public virtual DbSet<producto> productos { get; set; }
         public virtual DbSet<prospecto> prospectos { get; set; }
+        public virtual DbSet<evaluacion_preguntas> evaluacion_preguntas { get; set; }
+        public virtual DbSet<evaluacione> evaluaciones { get; set; }
         public virtual DbSet<pregunta> preguntas { get; set; }
-        public virtual DbSet<respuesta> respuestas { get; set; }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {
