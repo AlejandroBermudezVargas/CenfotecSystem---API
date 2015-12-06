@@ -12,44 +12,43 @@ using WebAPI_Sistema_Cenfotec.Models;
 
 namespace WebAPI_Sistema_Cenfotec.Controllers
 {
-    public class AnswersController : ApiController
+    public class EvaluationsController : ApiController
     {
         private DBContext db = new DBContext();
 
-        // GET: api/Answers
-        public IQueryable<respuesta> Getrespuestas()
+        // GET api/Evaluations
+        public IQueryable<evaluacione> Getevaluaciones()
         {
-            return db.respuestas;
+            return db.evaluaciones;
         }
 
-        // GET: api/Answers/5
-        [ResponseType(typeof(respuesta))]
-        public IHttpActionResult Getrespuesta(int id)
+        // GET api/Evaluations/5
+        [ResponseType(typeof(evaluacione))]
+        public IHttpActionResult Getevaluacione(int id)
         {
-            respuesta respuesta = db.respuestas.Find(id);
-            if (respuesta == null)
+            evaluacione evaluacione = db.evaluaciones.Find(id);
+            if (evaluacione == null)
             {
                 return NotFound();
             }
 
-            return Ok(respuesta);
+            return Ok(evaluacione);
         }
 
-        // PUT: api/Answers/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult Putrespuesta(int id, respuesta respuesta)
+        // PUT api/Evaluations/5
+        public IHttpActionResult Putevaluacione(int id, evaluacione evaluacione)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != respuesta.id_respuesta)
+            if (id != evaluacione.id_evaluacion)
             {
                 return BadRequest();
             }
 
-            db.Entry(respuesta).State = EntityState.Modified;
+            db.Entry(evaluacione).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +56,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!respuestaExists(id))
+                if (!evaluacioneExists(id))
                 {
                     return NotFound();
                 }
@@ -70,35 +69,35 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Answers
-        [ResponseType(typeof(respuesta))]
-        public IHttpActionResult Postrespuesta(respuesta respuesta)
+        // POST api/Evaluations
+        [ResponseType(typeof(evaluacione))]
+        public IHttpActionResult Postevaluacione(evaluacione evaluacione)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.respuestas.Add(respuesta);
+            db.evaluaciones.Add(evaluacione);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = respuesta.id_respuesta }, respuesta);
+            return CreatedAtRoute("DefaultApi", new { id = evaluacione.id_evaluacion }, evaluacione);
         }
 
-        // DELETE: api/Answers/5
-        [ResponseType(typeof(respuesta))]
-        public IHttpActionResult Deleterespuesta(int id)
+        // DELETE api/Evaluations/5
+        [ResponseType(typeof(evaluacione))]
+        public IHttpActionResult Deleteevaluacione(int id)
         {
-            respuesta respuesta = db.respuestas.Find(id);
-            if (respuesta == null)
+            evaluacione evaluacione = db.evaluaciones.Find(id);
+            if (evaluacione == null)
             {
                 return NotFound();
             }
 
-            db.respuestas.Remove(respuesta);
+            db.evaluaciones.Remove(evaluacione);
             db.SaveChanges();
 
-            return Ok(respuesta);
+            return Ok(evaluacione);
         }
 
         protected override void Dispose(bool disposing)
@@ -110,9 +109,9 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             base.Dispose(disposing);
         }
 
-        private bool respuestaExists(int id)
+        private bool evaluacioneExists(int id)
         {
-            return db.respuestas.Count(e => e.id_respuesta == id) > 0;
+            return db.evaluaciones.Count(e => e.id_evaluacion == id) > 0;
         }
     }
 }
