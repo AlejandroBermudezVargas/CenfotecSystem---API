@@ -76,6 +76,22 @@
           <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="descripcion" Type="varchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="plantilla">
+          <Key>
+            <PropertyRef Name="id_plantilla" />
+          </Key>
+          <Property Name="id_plantilla" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="descripcion" Type="varchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="plantilla_preguntas">
+          <Key>
+            <PropertyRef Name="id_plantilla" />
+            <PropertyRef Name="id_pregunta" />
+          </Key>
+          <Property Name="id_plantilla" Type="int" Nullable="false" />
+          <Property Name="id_pregunta" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="preguntas">
           <Key>
             <PropertyRef Name="id_pregunta" />
@@ -415,6 +431,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_plantilla_preguntas_plantilla">
+          <End Role="plantilla" Type="Self.plantilla" Multiplicity="1" />
+          <End Role="plantilla_preguntas" Type="Self.plantilla_preguntas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="plantilla">
+              <PropertyRef Name="id_plantilla" />
+            </Principal>
+            <Dependent Role="plantilla_preguntas">
+              <PropertyRef Name="id_plantilla" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_plantilla_preguntas_preguntas">
+          <End Role="preguntas" Type="Self.preguntas" Multiplicity="1" />
+          <End Role="plantilla_preguntas" Type="Self.plantilla_preguntas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="preguntas">
+              <PropertyRef Name="id_pregunta" />
+            </Principal>
+            <Dependent Role="plantilla_preguntas">
+              <PropertyRef Name="id_pregunta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_productos_tipo_producto">
           <End Role="tipo_producto" Type="Self.tipo_producto" Multiplicity="1" />
           <End Role="productos" Type="Self.productos" Multiplicity="*" />
@@ -634,6 +674,8 @@
           <EntitySet Name="historial_contrasennas" EntityType="Self.historial_contrasennas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="kpi" EntityType="Self.kpi" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="permisos" EntityType="Self.permisos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="plantilla" EntityType="Self.plantilla" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="plantilla_preguntas" EntityType="Self.plantilla_preguntas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="preguntas" EntityType="Self.preguntas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="productos" EntityType="Self.productos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="prospecto_interes" EntityType="Self.prospecto_interes" Schema="dbo" store:Type="Tables" />
@@ -710,6 +752,14 @@
           <AssociationSet Name="FK_kpi_tipo_kpi" Association="Self.FK_kpi_tipo_kpi">
             <End Role="tipo_kpi" EntitySet="tipo_kpi" />
             <End Role="kpi" EntitySet="kpi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_plantilla_preguntas_plantilla" Association="Self.FK_plantilla_preguntas_plantilla">
+            <End Role="plantilla" EntitySet="plantilla" />
+            <End Role="plantilla_preguntas" EntitySet="plantilla_preguntas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_plantilla_preguntas_preguntas" Association="Self.FK_plantilla_preguntas_preguntas">
+            <End Role="preguntas" EntitySet="preguntas" />
+            <End Role="plantilla_preguntas" EntitySet="plantilla_preguntas" />
           </AssociationSet>
           <AssociationSet Name="FK_productos_tipo_producto" Association="Self.FK_productos_tipo_producto">
             <End Role="tipo_producto" EntitySet="tipo_producto" />
@@ -987,6 +1037,11 @@
           <AssociationSet Name="FK_evaluacion_preguntas_preguntas" Association="DatabaseModel.FK_evaluacion_preguntas_preguntas">
             <End Role="pregunta" EntitySet="preguntas" />
             <End Role="evaluacion_preguntas" EntitySet="evaluacion_preguntas" />
+          </AssociationSet>
+          <EntitySet Name="plantillas" EntityType="DatabaseModel.plantilla" />
+          <AssociationSet Name="plantilla_preguntas" Association="DatabaseModel.plantilla_preguntas">
+            <End Role="plantilla" EntitySet="plantillas" />
+            <End Role="pregunta" EntitySet="preguntas" />
           </AssociationSet>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -1412,6 +1467,7 @@
           <Property Name="pregunta1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="peso" Type="Int32" Nullable="false" />
           <NavigationProperty Name="evaluacion_preguntas" Relationship="DatabaseModel.FK_evaluacion_preguntas_preguntas" FromRole="pregunta" ToRole="evaluacion_preguntas" />
+          <NavigationProperty Name="plantillas" Relationship="DatabaseModel.plantilla_preguntas" FromRole="pregunta" ToRole="plantilla" />
         </EntityType>
         <Association Name="FK_evaluacion_preguntas_evaluaciones">
           <End Type="DatabaseModel.evaluacione" Role="evaluacione" Multiplicity="1" />
@@ -1436,6 +1492,19 @@
               <PropertyRef Name="id_pregunta" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <EntityType Name="plantilla">
+          <Key>
+            <PropertyRef Name="id_plantilla" />
+          </Key>
+          <Property Name="id_plantilla" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="descripcion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="preguntas" Relationship="DatabaseModel.plantilla_preguntas" FromRole="plantilla" ToRole="pregunta" />
+        </EntityType>
+        <Association Name="plantilla_preguntas">
+          <End Type="DatabaseModel.plantilla" Role="plantilla" Multiplicity="*" />
+          <End Type="DatabaseModel.pregunta" Role="pregunta" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1715,6 +1784,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="plantillas">
+            <EntityTypeMapping TypeName="DatabaseModel.plantilla">
+              <MappingFragment StoreEntitySet="plantilla">
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="id_plantilla" ColumnName="id_plantilla" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="plantilla_preguntas" TypeName="DatabaseModel.plantilla_preguntas" StoreEntitySet="plantilla_preguntas">
+            <EndProperty Name="pregunta">
+              <ScalarProperty Name="id_pregunta" ColumnName="id_pregunta" />
+            </EndProperty>
+            <EndProperty Name="plantilla">
+              <ScalarProperty Name="id_plantilla" ColumnName="id_plantilla" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -12,19 +12,17 @@ namespace WebAPI_Sistema_Cenfotec.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class pregunta
+    public partial class plantilla
     {
-        public pregunta()
+        public plantilla()
         {
-            this.evaluacion_preguntas = new HashSet<evaluacion_preguntas>();
-            this.plantillas = new HashSet<plantilla>();
+            this.preguntas = new HashSet<pregunta>();
         }
     
-        public int id_pregunta { get; set; }
-        public string pregunta1 { get; set; }
-        public int peso { get; set; }
+        public int id_plantilla { get; set; }
+        public string nombre { get; set; }
+        public string descripcion { get; set; }
     
-        public virtual ICollection<evaluacion_preguntas> evaluacion_preguntas { get; set; }
-        public virtual ICollection<plantilla> plantillas { get; set; }
+        public virtual ICollection<pregunta> preguntas { get; set; }
     }
 }
