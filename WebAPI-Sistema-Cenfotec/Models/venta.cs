@@ -25,6 +25,8 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public Nullable<decimal> monto { get; set; }
         public Nullable<System.DateTime> fecha { get; set; }
         public string tipo { get; set; }
+        public System.DateTime fecha_creacion { get; set; }
+        public System.DateTime fecha_actualizacion { get; set; }
     
         public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual usuario usuario { get; set; }

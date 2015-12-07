@@ -9,7 +9,6 @@
 
 namespace WebAPI_Sistema_Cenfotec.Models
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -20,14 +19,10 @@ namespace WebAPI_Sistema_Cenfotec.Models
             this.bitacoras = new HashSet<bitacora>();
             this.prospectos = new HashSet<prospecto>();
         }
-
-        [JsonProperty(PropertyName = "idevento")]
+    
         public int id_evento { get; set; }
-        [JsonProperty(PropertyName = "lugar")]
         public string lugar { get; set; }
-        [JsonProperty(PropertyName = "fechaInicio")]
         public System.DateTime fecha_inicio { get; set; }
-        [JsonProperty(PropertyName = "fechaFin")]
         public System.DateTime fecha_fin { get; set; }
     
         public virtual ICollection<bitacora> bitacoras { get; set; }

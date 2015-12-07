@@ -33,6 +33,8 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public bool interesado { get; set; }
         public bool cliente { get; set; }
         public Nullable<int> id_evento { get; set; }
+        public System.DateTime fecha_creacion { get; set; }
+        public System.DateTime fecha_actualizacion { get; set; }
     
         public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual evento evento { get; set; }

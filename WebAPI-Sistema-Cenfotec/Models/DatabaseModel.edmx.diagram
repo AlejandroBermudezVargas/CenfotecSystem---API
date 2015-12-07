@@ -9,7 +9,6 @@
         <EntityTypeShape EntityType="DatabaseModel.reporte" Width="1.5" PointX="3" PointY="16.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.seguimiento" Width="1.5" PointX="3" PointY="19.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.sesion" Width="1.5" PointX="3" PointY="22.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="DatabaseModel.sysdiagram" Width="1.5" PointX="7.25" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.venta" Width="1.5" PointX="8.25" PointY="9.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DatabaseModel.tipo_producto" Width="1.5" PointX="7.5" PointY="19.125" />
         <EntityTypeShape EntityType="DatabaseModel.kpi" Width="1.5" PointX="9.625" PointY="3.875" />
