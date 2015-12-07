@@ -49,6 +49,8 @@
         <EntityTypeShape EntityType="DatabaseModel.pregunta" Width="1.5" PointX="0.75" PointY="7" />
         <AssociationConnector Association="DatabaseModel.FK_evaluacion_preguntas_evaluaciones" />
         <AssociationConnector Association="DatabaseModel.FK_evaluacion_preguntas_preguntas" />
+        <EntityTypeShape EntityType="DatabaseModel.plantilla" Width="1.5" PointX="0.75" PointY="10.125" />
+        <AssociationConnector Association="DatabaseModel.plantilla_preguntas" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
