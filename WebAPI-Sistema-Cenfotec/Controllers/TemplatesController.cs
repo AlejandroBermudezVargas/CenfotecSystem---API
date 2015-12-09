@@ -78,6 +78,13 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                 return BadRequest(ModelState);
             }
 
+            
+            for (int i = 0; i < plantilla.preguntas.Count; i++)
+            {
+                pregunta pregunta = plantilla.preguntas.ElementAt(i);
+                plantilla.preguntas.Remove(pregunta);
+                plantilla.preguntas.Add(db.preguntas.Find(pregunta.id_pregunta));
+            }
             db.plantillas.Add(plantilla);
             db.SaveChanges();
 
