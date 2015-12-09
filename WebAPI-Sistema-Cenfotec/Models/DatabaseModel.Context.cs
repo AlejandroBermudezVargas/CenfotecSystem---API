@@ -20,7 +20,6 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public DBContext()
             : base("name=DBContext")
         {
-            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -32,7 +31,6 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public virtual DbSet<reporte> reportes { get; set; }
         public virtual DbSet<seguimiento> seguimientos { get; set; }
         public virtual DbSet<sesion> sesions { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<venta> ventas { get; set; }
         public virtual DbSet<tipo_producto> tipo_producto { get; set; }
         public virtual DbSet<kpi> kpis { get; set; }

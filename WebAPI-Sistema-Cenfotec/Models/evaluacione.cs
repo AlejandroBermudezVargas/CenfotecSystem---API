@@ -23,6 +23,8 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public int usuario_evaluado { get; set; }
         public int porcentaje_desactivacion { get; set; }
         public int curso_evaluado { get; set; }
+        public System.DateTime fecha_creacion { get; set; }
+        public System.DateTime fecha_actualizacion { get; set; }
     
         public virtual ICollection<evaluacion_preguntas> evaluacion_preguntas { get; set; }
     }
