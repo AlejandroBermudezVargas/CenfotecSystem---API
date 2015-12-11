@@ -20,6 +20,7 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public DBContext()
             : base("name=DBContext")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
