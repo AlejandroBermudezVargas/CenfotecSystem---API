@@ -31,24 +31,30 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             {
                 return NotFound();
             }
-
+            db.Entry(plantilla).Collection(p => p.preguntas).Load();
             return Ok(plantilla);
         }
 
         // PUT api/Templates/5
         public IHttpActionResult Putplantilla(int id, plantilla plantilla)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (id != plantilla.id_plantilla) return BadRequest();
+            plantilla databaseTemplate = db.plantillas.Find(plantilla.id_plantilla);
+            db.Entry(databaseTemplate).Collection(p => p.preguntas).Load();
+            int count = databaseTemplate.preguntas.Count;
+            for (int i = 0; i < count; i++)
             {
-                return BadRequest(ModelState);
+                databaseTemplate.preguntas.Remove(databaseTemplate.preguntas.ElementAt(0));
             }
-
-            if (id != plantilla.id_plantilla)
+            count = plantilla.preguntas.Count;
+            for (int j = 0; j < count; j++)
             {
-                return BadRequest();
+                databaseTemplate.preguntas.Add(db.preguntas.Find(plantilla.preguntas.ElementAt(j).id_pregunta));
             }
-
-            db.Entry(plantilla).State = EntityState.Modified;
+            databaseTemplate.nombre = plantilla.nombre;
+            databaseTemplate.descripcion = plantilla.descripcion;
+            db.Entry(databaseTemplate).State = EntityState.Modified;
 
             try
             {
@@ -78,6 +84,13 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                 return BadRequest(ModelState);
             }
 
+
+            for (int i = 0; i < plantilla.preguntas.Count; i++)
+            {
+                pregunta pregunta = plantilla.preguntas.ElementAt(i);
+                plantilla.preguntas.Remove(pregunta);
+                plantilla.preguntas.Add(db.preguntas.Find(pregunta.id_pregunta));
+            }
             db.plantillas.Add(plantilla);
             db.SaveChanges();
 
