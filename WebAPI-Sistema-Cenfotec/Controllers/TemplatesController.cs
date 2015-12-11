@@ -31,7 +31,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             {
                 return NotFound();
             }
-
+            db.Entry(plantilla).Collection(p => p.preguntas).Load();
             return Ok(plantilla);
         }
 
