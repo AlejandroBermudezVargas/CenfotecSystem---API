@@ -68,7 +68,10 @@
           </Key>
           <Property Name="id_kpi" Type="int" Nullable="false" />
           <Property Name="id_tipo" Type="int" Nullable="false" />
-          <Property Name="descripcion" Type="varchar" MaxLength="100" />
+          <Property Name="descripcion_indicador" Type="varchar" MaxLength="100" />
+          <Property Name="indicador" Type="varchar" MaxLength="100" />
+          <Property Name="fecha_inicio" Type="date" />
+          <Property Name="fecha_final" Type="date" />
         </EntityType>
         <EntityType Name="permisos">
           <Key>
@@ -1035,6 +1038,9 @@
           <Property Name="id_tipo" Type="Int32" Nullable="false" />
           <Property Name="descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="tipo_kpi" Relationship="DatabaseModel.FK_kpi_tipo_kpi" FromRole="kpi" ToRole="tipo_kpi" />
+          <Property Name="indicador" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="fecha_inicio" Type="DateTime" Precision="0" />
+          <Property Name="fecha_final" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="rol">
           <Key>
@@ -1543,7 +1549,10 @@
           <EntitySetMapping Name="kpis">
             <EntityTypeMapping TypeName="DatabaseModel.kpi">
               <MappingFragment StoreEntitySet="kpi">
-                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion_indicador" />
+                <ScalarProperty Name="fecha_final" ColumnName="fecha_final" />
+                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
+                <ScalarProperty Name="indicador" ColumnName="indicador" />
                 <ScalarProperty Name="id_tipo" ColumnName="id_tipo" />
                 <ScalarProperty Name="id_kpi" ColumnName="id_kpi" />
               </MappingFragment>

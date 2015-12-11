@@ -144,6 +144,7 @@
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\FollowUpsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\kpisController.cs" />
     <Compile Include="Controllers\Logic\AES256.cs" />
     <Compile Include="Controllers\Logic\Bitacora.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
