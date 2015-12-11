@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="bitacoras">
           <Key>
             <PropertyRef Name="id_bitacora" />
@@ -66,10 +66,10 @@
           <Key>
             <PropertyRef Name="id_kpi" />
           </Key>
-          <Property Name="id_kpi" Type="int" Nullable="false" />
+          <Property Name="id_kpi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="id_tipo" Type="int" Nullable="false" />
-          <Property Name="descripcion_indicador" Type="varchar" MaxLength="100" />
-          <Property Name="indicador" Type="varchar" MaxLength="100" />
+          <Property Name="descripcion_indicador" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="indicador" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="fecha_inicio" Type="date" />
           <Property Name="fecha_final" Type="date" />
         </EntityType>
@@ -192,8 +192,8 @@
           <Key>
             <PropertyRef Name="id_tipo" />
           </Key>
-          <Property Name="id_tipo" Type="int" Nullable="false" />
-          <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="id_tipo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="tipo_producto">
           <Key>
@@ -993,6 +993,7 @@
           </AssociationSet>
           <EntitySet Name="evaluacion_preguntas" EntityType="DatabaseModel.evaluacion_preguntas" />
           <EntitySet Name="evaluaciones" EntityType="DatabaseModel.evaluacione" />
+          <EntitySet Name="plantillas" EntityType="DatabaseModel.plantilla" />
           <EntitySet Name="preguntas" EntityType="DatabaseModel.pregunta" />
           <AssociationSet Name="FK_evaluacion_preguntas_evaluaciones" Association="DatabaseModel.FK_evaluacion_preguntas_evaluaciones">
             <End Role="evaluacione" EntitySet="evaluaciones" />
@@ -1002,7 +1003,6 @@
             <End Role="pregunta" EntitySet="preguntas" />
             <End Role="evaluacion_preguntas" EntitySet="evaluacion_preguntas" />
           </AssociationSet>
-          <EntitySet Name="plantillas" EntityType="DatabaseModel.plantilla" />
           <AssociationSet Name="plantilla_preguntas" Association="DatabaseModel.plantilla_preguntas">
             <End Role="plantilla" EntitySet="plantillas" />
             <End Role="pregunta" EntitySet="preguntas" />
@@ -1036,9 +1036,9 @@
           </Key>
           <Property Name="id_kpi" Type="Int32" Nullable="false" />
           <Property Name="id_tipo" Type="Int32" Nullable="false" />
-          <Property Name="descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="tipo_kpi" Relationship="DatabaseModel.FK_kpi_tipo_kpi" FromRole="kpi" ToRole="tipo_kpi" />
-          <Property Name="indicador" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="indicador" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="fecha_inicio" Type="DateTime" Precision="0" />
           <Property Name="fecha_final" Type="DateTime" Precision="0" />
         </EntityType>
@@ -1057,7 +1057,7 @@
             <PropertyRef Name="id_tipo" />
           </Key>
           <Property Name="id_tipo" Type="Int32" Nullable="false" />
-          <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="kpis" Relationship="DatabaseModel.FK_kpi_tipo_kpi" FromRole="tipo_kpi" ToRole="kpi" />
         </EntityType>
         <Association Name="FK_kpi_tipo_kpi">
@@ -1428,9 +1428,18 @@
           <Property Name="usuario_evaluado" Type="Int32" Nullable="false" />
           <Property Name="porcentaje_desactivacion" Type="Int32" Nullable="false" />
           <Property Name="curso_evaluado" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="evaluacion_preguntas" Relationship="DatabaseModel.FK_evaluacion_preguntas_evaluaciones" FromRole="evaluacione" ToRole="evaluacion_preguntas" />
           <Property Name="fecha_creacion" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="fecha_actualizacion" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="evaluacion_preguntas" Relationship="DatabaseModel.FK_evaluacion_preguntas_evaluaciones" FromRole="evaluacione" ToRole="evaluacion_preguntas" />
+        </EntityType>
+        <EntityType Name="plantilla">
+          <Key>
+            <PropertyRef Name="id_plantilla" />
+          </Key>
+          <Property Name="id_plantilla" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="descripcion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="preguntas" Relationship="DatabaseModel.plantilla_preguntas" FromRole="plantilla" ToRole="pregunta" />
         </EntityType>
         <EntityType Name="pregunta">
           <Key>
@@ -1466,15 +1475,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="plantilla">
-          <Key>
-            <PropertyRef Name="id_plantilla" />
-          </Key>
-          <Property Name="id_plantilla" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="descripcion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="preguntas" Relationship="DatabaseModel.plantilla_preguntas" FromRole="plantilla" ToRole="pregunta" />
-        </EntityType>
         <Association Name="plantilla_preguntas">
           <End Type="DatabaseModel.plantilla" Role="plantilla" Multiplicity="*" />
           <End Type="DatabaseModel.pregunta" Role="pregunta" Multiplicity="*" />
@@ -1726,21 +1726,21 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="preguntas">
-            <EntityTypeMapping TypeName="DatabaseModel.pregunta">
-              <MappingFragment StoreEntitySet="preguntas">
-                <ScalarProperty Name="peso" ColumnName="peso" />
-                <ScalarProperty Name="pregunta1" ColumnName="pregunta" />
-                <ScalarProperty Name="id_pregunta" ColumnName="id_pregunta" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="plantillas">
             <EntityTypeMapping TypeName="DatabaseModel.plantilla">
               <MappingFragment StoreEntitySet="plantilla">
                 <ScalarProperty Name="descripcion" ColumnName="descripcion" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
                 <ScalarProperty Name="id_plantilla" ColumnName="id_plantilla" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="preguntas">
+            <EntityTypeMapping TypeName="DatabaseModel.pregunta">
+              <MappingFragment StoreEntitySet="preguntas">
+                <ScalarProperty Name="peso" ColumnName="peso" />
+                <ScalarProperty Name="pregunta1" ColumnName="pregunta" />
+                <ScalarProperty Name="id_pregunta" ColumnName="id_pregunta" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
