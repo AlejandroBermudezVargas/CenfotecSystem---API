@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using WebAPI_Sistema_Cenfotec.Controllers.Logic;
 using WebAPI_Sistema_Cenfotec.Models;
 
 namespace WebAPI_Sistema_Cenfotec.Controllers
@@ -67,6 +68,14 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        [HttpPost]
+        [Route("api/Evaluations/email/{idEvaluacion}")]
+        public IHttpActionResult email(List<usuario> users, int idEvaluacion)
+        {
+            if (Email.getInstance().send(users, db.evaluaciones.Find(idEvaluacion))) return Ok();
+            return BadRequest();
         }
 
         // POST api/Evaluations
