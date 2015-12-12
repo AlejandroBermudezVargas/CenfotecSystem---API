@@ -29,6 +29,7 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public System.DateTime fecha_actualizacion { get; set; }
     
         public virtual ICollection<evaluacion_preguntas> evaluacion_preguntas { get; set; }
+        public virtual producto producto { get; set; }
         public virtual usuario usuario { get; set; }
         public virtual usuario usuario1 { get; set; }
     }

@@ -17,8 +17,9 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public producto()
         {
             this.bitacoras = new HashSet<bitacora>();
-            this.ventas = new HashSet<venta>();
+            this.evaluaciones = new HashSet<evaluacione>();
             this.usuarios = new HashSet<usuario>();
+            this.ventas = new HashSet<venta>();
         }
     
         public int id_producto { get; set; }
@@ -31,8 +32,9 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public System.DateTime fecha_actualizacion { get; set; }
     
         public virtual ICollection<bitacora> bitacoras { get; set; }
+        public virtual ICollection<evaluacione> evaluaciones { get; set; }
         public virtual tipo_producto tipo_producto { get; set; }
-        public virtual ICollection<venta> ventas { get; set; }
         public virtual ICollection<usuario> usuarios { get; set; }
+        public virtual ICollection<venta> ventas { get; set; }
     }
 }
