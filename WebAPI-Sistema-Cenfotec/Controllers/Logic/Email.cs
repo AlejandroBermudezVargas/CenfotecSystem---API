@@ -13,6 +13,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers.Logic
         private static MailMessage mail = new MailMessage();
         private static SmtpClient smtp = new SmtpClient();
         private static Email email;
+        private DBContext db = new DBContext();
 
         private Email() { }
 
@@ -22,16 +23,14 @@ namespace WebAPI_Sistema_Cenfotec.Controllers.Logic
             return email;
         }
 
-        public bool send(List<usuario> users, evaluacione evaluacion)
+        public bool send(List<usuario> users, plantilla plantilla, evaluacione evaluacion)
         {
             string from = System.Configuration.ConfigurationManager.AppSettings["email"];
             string password = System.Configuration.ConfigurationManager.AppSettings["password"];
+            string port = System.Configuration.ConfigurationManager.AppSettings["endpoint"];
             try
             {
-               
-                mail.To.Add(new MailAddress("alebv10@hotmail.com"));
-                mail.Body = "<h4>Buenas puedes ingresar a realizar la evaluacion de "+"</h4>";
-                mail.Subject ="Evaluacion ";
+                mail.Subject = "Evaluacion ";
                 mail.From = new MailAddress(from);
                 smtp.Host = "smtp.gmail.com";
                 smtp.Port = 587;
@@ -39,15 +38,16 @@ namespace WebAPI_Sistema_Cenfotec.Controllers.Logic
                 smtp.UseDefaultCredentials = false;
                 smtp.Credentials = new NetworkCredential(from, password);
                 mail.IsBodyHtml = true;
-                smtp.Send(mail);
 
-                //foreach (var user in users)
-                //{
-                
-                
-                
-                
-                //}
+                foreach (var user in users)
+                {
+                    mail.To.Add(new MailAddress(user.correo));
+                    mail.Body = "<h4>Buenas puedes ingresar a realizar la evaluacion de " + evaluacion.usuario.nombre + " "
+                        + evaluacion.usuario.apellido + "</h4>";
+                    mail.Body = "<h2>" + port + "/" + AES256.encryptPassword(evaluacion.id_evaluacion.ToString()) + "/" +
+                        AES256.encryptPassword(user.id_usuario.ToString()) + " - " + evaluacion.producto.nombre + "</h2>";
+                }
+                smtp.Send(mail);
                 return true;
             }
             catch (Exception e)

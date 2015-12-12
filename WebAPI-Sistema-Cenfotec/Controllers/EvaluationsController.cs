@@ -71,10 +71,15 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         }
 
         [HttpPost]
-        [Route("api/Evaluations/email/{idEvaluacion}")]
-        public IHttpActionResult email(List<usuario> users, int idEvaluacion)
+        [Route("api/Evaluations/email/{idTemplate}/{idProfesor}/{idCurso}/{porcentaje}")]
+        public IHttpActionResult email(List<usuario> users, int idTemplate, int idProfesor, int idCurso, int porcentaje)
         {
-            if (Email.getInstance().send(users, db.evaluaciones.Find(idEvaluacion))) return Ok();
+            plantilla template = db.plantillas.Find(idTemplate);
+            evaluacione evaluation = null;
+            evaluation.usuario = db.usuarios.Find(idProfesor);
+            evaluation.curso_evaluado = idCurso;
+            evaluation.porcentaje_desactivacion = porcentaje;
+            if (Email.getInstance().send(users,template, evaluation)) return Ok();
             return BadRequest();
         }
 
