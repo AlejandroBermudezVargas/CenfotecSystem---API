@@ -29,7 +29,7 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public System.DateTime fecha_actualizacion { get; set; }
     
         public virtual ICollection<bitacora> bitacoras { get; set; }
-        public virtual usuario usuario { get; set; }
         public virtual ICollection<producto> productos { get; set; }
+        public virtual usuario usuario { get; set; }
     }
 }

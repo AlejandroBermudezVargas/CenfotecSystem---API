@@ -17,8 +17,8 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public producto()
         {
             this.bitacoras = new HashSet<bitacora>();
-            this.usuarios = new HashSet<usuario>();
             this.ventas = new HashSet<venta>();
+            this.usuarios = new HashSet<usuario>();
         }
     
         public int id_producto { get; set; }
@@ -32,7 +32,7 @@ namespace WebAPI_Sistema_Cenfotec.Models
     
         public virtual ICollection<bitacora> bitacoras { get; set; }
         public virtual tipo_producto tipo_producto { get; set; }
-        public virtual ICollection<usuario> usuarios { get; set; }
         public virtual ICollection<venta> ventas { get; set; }
+        public virtual ICollection<usuario> usuarios { get; set; }
     }
 }

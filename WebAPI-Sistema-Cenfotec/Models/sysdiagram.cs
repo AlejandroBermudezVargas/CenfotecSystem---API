@@ -12,13 +12,12 @@ namespace WebAPI_Sistema_Cenfotec.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class evaluacion_preguntas
+    public partial class sysdiagram
     {
-        public int id_evaluacion { get; set; }
-        public int id_pregunta { get; set; }
-        public int respuesta { get; set; }
-    
-        public virtual pregunta pregunta { get; set; }
-        public virtual evaluacione evaluacione { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

@@ -17,6 +17,9 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public usuario()
         {
             this.bitacoras = new HashSet<bitacora>();
+            this.bitacoras1 = new HashSet<bitacora>();
+            this.evaluaciones = new HashSet<evaluacione>();
+            this.evaluaciones1 = new HashSet<evaluacione>();
             this.historial_contrasennas = new HashSet<historial_contrasennas>();
             this.sesions = new HashSet<sesion>();
             this.ventas = new HashSet<venta>();
@@ -36,6 +39,9 @@ namespace WebAPI_Sistema_Cenfotec.Models
         public int id_rol { get; set; }
     
         public virtual ICollection<bitacora> bitacoras { get; set; }
+        public virtual ICollection<bitacora> bitacoras1 { get; set; }
+        public virtual ICollection<evaluacione> evaluaciones { get; set; }
+        public virtual ICollection<evaluacione> evaluaciones1 { get; set; }
         public virtual ICollection<historial_contrasennas> historial_contrasennas { get; set; }
         public virtual rol rol { get; set; }
         public virtual ICollection<sesion> sesions { get; set; }
