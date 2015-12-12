@@ -21,11 +21,15 @@ namespace WebAPI_Sistema_Cenfotec.Models
     
         public int id_evaluacion { get; set; }
         public int usuario_evaluado { get; set; }
+        public int id_evaluador { get; set; }
         public int porcentaje_desactivacion { get; set; }
         public int curso_evaluado { get; set; }
+        public bool estado { get; set; }
         public System.DateTime fecha_creacion { get; set; }
         public System.DateTime fecha_actualizacion { get; set; }
     
         public virtual ICollection<evaluacion_preguntas> evaluacion_preguntas { get; set; }
+        public virtual usuario usuario { get; set; }
+        public virtual usuario usuario1 { get; set; }
     }
 }
