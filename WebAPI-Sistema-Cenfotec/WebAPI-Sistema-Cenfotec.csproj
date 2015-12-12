@@ -155,6 +155,7 @@
     <Compile Include="Controllers\RolsController.cs" />
     <Compile Include="Controllers\SalesController.cs" />
     <Compile Include="Controllers\TemplatesController.cs" />
+    <Compile Include="Controllers\tipo_kpiController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

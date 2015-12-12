@@ -12,44 +12,44 @@ using WebAPI_Sistema_Cenfotec.Models;
 
 namespace WebAPI_Sistema_Cenfotec.Controllers
 {
-    public class kpisController : ApiController
+    public class tipo_kpiController : ApiController
     {
         private DBContext db = new DBContext();
 
-        // GET: api/kpis
-        public IQueryable<kpi> Getkpis()
+        // GET: api/tipo_kpi
+        public IQueryable<tipo_kpi> Gettipo_kpi()
         {
-            return db.kpis;
+            return db.tipo_kpi;
         }
 
-        // GET: api/kpis/5
-        [ResponseType(typeof(kpi))]
-        public IHttpActionResult Getkpi(int id)
+        // GET: api/tipo_kpi/5
+        [ResponseType(typeof(tipo_kpi))]
+        public IHttpActionResult Gettipo_kpi(int id)
         {
-            kpi kpi = db.kpis.Find(id);
-            if (kpi == null)
+            tipo_kpi tipo_kpi = db.tipo_kpi.Find(id);
+            if (tipo_kpi == null)
             {
                 return NotFound();
             }
 
-            return Ok(kpi);
+            return Ok(tipo_kpi);
         }
 
-        // PUT: api/kpis/5
+        // PUT: api/tipo_kpi/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult Putkpi(int id, kpi kpi)
+        public IHttpActionResult Puttipo_kpi(int id, tipo_kpi tipo_kpi)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != kpi.id_kpi)
+            if (id != tipo_kpi.id_tipo)
             {
                 return BadRequest();
             }
 
-            db.Entry(kpi).State = EntityState.Modified;
+            db.Entry(tipo_kpi).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +57,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!kpiExists(id))
+                if (!tipo_kpiExists(id))
                 {
                     return NotFound();
                 }
@@ -70,16 +70,16 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/kpis
-        [ResponseType(typeof(kpi))]
-        public IHttpActionResult Postkpi(kpi kpi)
+        // POST: api/tipo_kpi
+        [ResponseType(typeof(tipo_kpi))]
+        public IHttpActionResult Posttipo_kpi(tipo_kpi tipo_kpi)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.kpis.Add(kpi);
+            db.tipo_kpi.Add(tipo_kpi);
 
             try
             {
@@ -87,7 +87,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             }
             catch (DbUpdateException)
             {
-                if (kpiExists(kpi.id_kpi))
+                if (tipo_kpiExists(tipo_kpi.id_tipo))
                 {
                     return Conflict();
                 }
@@ -97,23 +97,23 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                 }
             }
 
-            return CreatedAtRoute("DefaultApi", new { id = kpi.id_kpi }, kpi);
+            return CreatedAtRoute("DefaultApi", new { id = tipo_kpi.id_tipo }, tipo_kpi);
         }
 
-        // DELETE: api/kpis/5
-        [ResponseType(typeof(kpi))]
-        public IHttpActionResult Deletekpi(int id)
+        // DELETE: api/tipo_kpi/5
+        [ResponseType(typeof(tipo_kpi))]
+        public IHttpActionResult Deletetipo_kpi(int id)
         {
-            kpi kpi = db.kpis.Find(id);
-            if (kpi == null)
+            tipo_kpi tipo_kpi = db.tipo_kpi.Find(id);
+            if (tipo_kpi == null)
             {
                 return NotFound();
             }
 
-            db.kpis.Remove(kpi);
+            db.tipo_kpi.Remove(tipo_kpi);
             db.SaveChanges();
 
-            return Ok(kpi);
+            return Ok(tipo_kpi);
         }
 
         protected override void Dispose(bool disposing)
@@ -125,21 +125,9 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             base.Dispose(disposing);
         }
 
-        private bool kpiExists(int id)
+        private bool tipo_kpiExists(int id)
         {
-            return db.kpis.Count(e => e.id_kpi == id) > 0;
-        }
-
-        [Route("api/Kpis/getKPIVentas")]
-        [HttpGet]
-        public List<kpi> getKPIVentas()
-        {
-            //var results = db.kpis.Select(x => new { x.id_kpi, x.descripcion, x.indicador }).ToList();
-
-            return (from a in db.kpis
-                    where a.id_tipo == 1
-                       select a).ToList();
-            
+            return db.tipo_kpi.Count(e => e.id_tipo == id) > 0;
         }
     }
 }
