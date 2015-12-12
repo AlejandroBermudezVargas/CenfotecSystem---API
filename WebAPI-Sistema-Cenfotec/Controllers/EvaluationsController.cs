@@ -75,10 +75,11 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         public IHttpActionResult email(List<usuario> users, int idTemplate, int idProfesor, int idCurso, int porcentaje)
         {
             plantilla template = db.plantillas.Find(idTemplate);
-            evaluacione evaluation = null;
+            evaluacione evaluation = new evaluacione();
             evaluation.usuario = db.usuarios.Find(idProfesor);
             evaluation.curso_evaluado = idCurso;
             evaluation.porcentaje_desactivacion = porcentaje;
+            evaluation.producto = db.productos.Find(idCurso);
             if (Email.getInstance().send(users,template, evaluation)) return Ok();
             return BadRequest();
         }

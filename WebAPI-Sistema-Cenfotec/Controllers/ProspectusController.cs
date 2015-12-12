@@ -78,7 +78,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             {
                 prospectoBD.id_evento = null;
             }
-
+            prospecto.fecha_actualizacion = DateTime.Now;
             db.Entry(prospectoBD).State = EntityState.Modified;
 
             try
@@ -123,6 +123,8 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             }
             try
             {
+                prospecto.fecha_creacion = DateTime.Now;
+                prospecto.fecha_actualizacion = DateTime.Now;
                 db.prospectos.Add(prospecto);
                 db.SaveChanges();
             }

@@ -57,7 +57,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             {
                 return BadRequest();
             }
-
+            seguimiento.fecha_actualizacion = DateTime.Now;
             db.Entry(seguimiento).State = EntityState.Modified;
 
             try
@@ -87,7 +87,8 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            seguimiento.fecha_actualizacion = DateTime.Now;
+            seguimiento.fecha_creacion = DateTime.Now;
             db.seguimientos.Add(seguimiento);
             db.SaveChanges();
 

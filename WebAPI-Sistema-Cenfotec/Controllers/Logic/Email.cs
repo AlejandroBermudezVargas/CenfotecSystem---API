@@ -44,10 +44,11 @@ namespace WebAPI_Sistema_Cenfotec.Controllers.Logic
                     mail.To.Add(new MailAddress(user.correo));
                     mail.Body = "<h4>Buenas puedes ingresar a realizar la evaluacion de " + evaluacion.usuario.nombre + " "
                         + evaluacion.usuario.apellido + "</h4>";
-                    mail.Body = "<h2>" + port + "/" + AES256.encryptPassword(evaluacion.id_evaluacion.ToString()) + "/" +
+                    mail.Body = "<h2>" + port +  AES256.encryptPassword(evaluacion.id_evaluacion.ToString()) + "/" +
                         AES256.encryptPassword(user.id_usuario.ToString()) + " - " + evaluacion.producto.nombre + "</h2>";
+                    smtp.Send(mail);
                 }
-                smtp.Send(mail);
+                
                 return true;
             }
             catch (Exception e)
