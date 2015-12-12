@@ -172,14 +172,30 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         public IHttpActionResult Postusuario(usuario usuario)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            usuario.password = AES256.encryptPassword(usuario.password);
-            db.usuarios.Add(usuario);
-            db.SaveChanges();
-            historial_contrasennas historial = new historial_contrasennas();
-            historial.id_usuario = usuario.id_usuario;
-            historial.contraseña = usuario.password;
-            db.historial_contrasennas.Add(historial);
-            db.SaveChanges();
+
+            if (usuario.productos == null)
+            {
+
+            }
+            else
+            {
+                int count = usuario.productos.Count;
+
+                for (int i = 0; i < usuario.productos.Count; i++)
+                {
+                    producto pproducto = usuario.productos.ElementAt(i);
+                    usuario.productos.Remove(pproducto);
+                    usuario.productos.Add(db.productos.Find(pproducto.id_producto));
+                }
+                usuario.password = AES256.encryptPassword(usuario.password);
+                db.usuarios.Add(usuario);
+                db.SaveChanges();
+                historial_contrasennas historial = new historial_contrasennas();
+                historial.id_usuario = usuario.id_usuario;
+                historial.contraseña = usuario.password;
+                db.historial_contrasennas.Add(historial);
+                db.SaveChanges();
+            }
             return CreatedAtRoute("DefaultApi", new { id = usuario.id_usuario }, usuario);
         }
         /// <summary>
