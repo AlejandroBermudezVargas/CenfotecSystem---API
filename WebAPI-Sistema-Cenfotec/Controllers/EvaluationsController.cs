@@ -35,6 +35,14 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             return Ok(evaluacione);
         }
 
+        [HttpPost]
+        [Route("api/Evaluations/email/{idEvaluacion}")]
+        public IHttpActionResult email(List<usuario> users, int idEvaluacion)
+        {
+            if (Logic.Email.getInstance().send(users, db.plantillas.Find(idEvaluacion))) return Ok(); 
+            return BadRequest();
+        }
+
         // PUT api/Evaluations/5
         public IHttpActionResult Putevaluacione(int id, evaluacione evaluacione)
         {

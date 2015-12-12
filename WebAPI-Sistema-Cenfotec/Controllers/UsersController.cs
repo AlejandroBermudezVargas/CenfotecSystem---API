@@ -65,7 +65,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         [ResponseType(typeof(usuario))]
         public IHttpActionResult Login(usuario usuario)
         {
-            string result = AES256.encryptPassword(usuario.password);
+            string result = AES256.encrypt(usuario.password);
             usuario user = db.usuarios.FirstOrDefault(u => u.correo == usuario.correo && u.password == result);
             if (user == null) return NotFound();
             user.rol = db.rols.Find(user.id_rol);
@@ -141,7 +141,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
             {
                 return BadRequest();
             }
-            usuario.password = AES256.encryptPassword(usuario.password);
+            usuario.password = AES256.encrypt(usuario.password);
             usuario.rol = db.rols.Find(usuario.id_rol);
             db.Entry(usuario).State = EntityState.Modified;
 
@@ -172,7 +172,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         public IHttpActionResult Postusuario(usuario usuario)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            usuario.password = AES256.encryptPassword(usuario.password);
+            usuario.password = AES256.encrypt(usuario.password);
             db.usuarios.Add(usuario);
             db.SaveChanges();
             historial_contrasennas historial = new historial_contrasennas();

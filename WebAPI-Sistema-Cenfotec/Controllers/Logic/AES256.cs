@@ -43,7 +43,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers.Logic
             return encryptedBytes;
         }
 
-        public static string encryptPassword(string password)
+        public static string encrypt(string password)
         {
             string key = "ThisKeyIs1345dh";
             byte[] bytesToBeEncrypted = Encoding.UTF8.GetBytes(password);

@@ -147,6 +147,7 @@
     <Compile Include="Controllers\kpisController.cs" />
     <Compile Include="Controllers\Logic\AES256.cs" />
     <Compile Include="Controllers\Logic\Bitacora.cs" />
+    <Compile Include="Controllers\Logic\Email.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ProductTypeController.cs" />
     <Compile Include="Controllers\ProspectusController.cs" />
