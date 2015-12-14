@@ -173,7 +173,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (usuario.productos == null)
+            if (usuario.productos==null)
             {
 
             }
@@ -187,6 +187,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                     usuario.productos.Remove(pproducto);
                     usuario.productos.Add(db.productos.Find(pproducto.id_producto));
                 }
+            }
                 usuario.password = AES256.encryptPassword(usuario.password);
                 db.usuarios.Add(usuario);
                 db.SaveChanges();
@@ -195,7 +196,7 @@ namespace WebAPI_Sistema_Cenfotec.Controllers
                 historial.contraseña = usuario.password;
                 db.historial_contrasennas.Add(historial);
                 db.SaveChanges();
-            }
+            
             return CreatedAtRoute("DefaultApi", new { id = usuario.id_usuario }, usuario);
         }
         /// <summary>
